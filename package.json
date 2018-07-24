@@ -4,15 +4,18 @@
   "description": "Sentiment analysis of tweets based on a keyword with a UI",
   "main": "index.js",
   "scripts": {
+    "build-zip": "./build.sh",
     "client": "cd client && yarn start",
-    "server": "nodemon server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "build-zip": "./build.sh"
+    "migrate": "knex migrate:latest",
+    "server": "nodemon server.js"
   },
   "author": "Sean Franklin <franklsm1@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "knex": "^0.15.2",
+    "mysql": "^2.16.0"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",
