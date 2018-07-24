@@ -8,7 +8,8 @@
     "client": "cd client && yarn start",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
     "migrate": "knex migrate:latest",
-    "server": "nodemon server.js"
+    "rollback": "knex migrate:rollback",
+    "server": "nodemon server.js --exec babel-node --presets es2015,stage-2"
   },
   "author": "Sean Franklin <franklsm1@gmail.com>",
   "license": "ISC",
@@ -18,6 +19,9 @@
     "mysql": "^2.16.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "concurrently": "^3.6.0",
     "nodemon": "^1.18.3"
   }

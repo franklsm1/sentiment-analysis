@@ -1,8 +1,8 @@
 exports.up = function (knex) {
     return knex.schema.createTable('tweet', function (t) {
-        t.increments('id').primary();
+        t.string('id').primary();
         t.string('keyword').notNullable();
-        t.string('content').notNullable();
+        t.string('text').notNullable();
         t.integer("sentiment").notNullable();
         t.dateTime("created_date")
     })

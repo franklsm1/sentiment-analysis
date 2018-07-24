@@ -5,4 +5,4 @@ module.exports = {
       password: process.env.dbPassword || '',
       database: 'sentiment_db'
     }
-  }
+  };

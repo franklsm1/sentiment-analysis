@@ -7,12 +7,13 @@
 1) inside of MySQL run the following command to create the databases that this app uses:
 - `create database sentiment_db;`
 1) exit mysql CLI: `exit`
-1) run migration to create tbale and add test data to the DB: `yarn migrate`
+1) run migration to create table and add test data to the DB: `yarn migrate`
 
 
 ### Commands:
 - Run locally: `yarn dev`
 - Build and package app into a zip: `yarn build-zip`
+- Rollback knex migrations: `yarn rollback`
 
 **Note**: May need to give build-zip script permissions to execute (`chmod +x ./build.sh`)
 
