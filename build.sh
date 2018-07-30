@@ -5,5 +5,8 @@ yarn install --production
 yarn build
 
 cd ..
+yarn install
+yarn test
+rm -rf node_modules
 yarn install --production
-zip -r build package.json server.js node_modules client/build
+zip -r sentiment-analysis package.json server.js node_modules client/build
