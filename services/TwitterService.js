@@ -1,4 +1,6 @@
 import Twitter from 'twitter';
+import Sentiment from 'sentiment';
+const sentiment = new Sentiment();
 
 export default class TwitterService {
     constructor() {
@@ -16,7 +18,10 @@ export default class TwitterService {
         });
 
         stream.on('data', (event) => {
-            this.analyzeTweet(event)
+            if (event.extended_tweet && event.lang === "en") {
+                let tweetObject = this.analyzeTweet(event);
+                tweetObject.keywords = keywords;
+            }
         });
 
         stream.on('error', (error) => {
@@ -24,9 +29,16 @@ export default class TwitterService {
         });
 
         return stream;
-    }
+    };
 
     analyzeTweet = (event) => {
-        console.log(event.text);
-    }
+        let tweetText = event.extended_tweet.full_text;
+        const sentimentAnalysis = sentiment.analyze(tweetText);
+        return {
+            id: event.id_str,
+            sentiment: sentimentAnalysis.score,
+            created_date: event.created_at,
+            text: tweetText
+        };
+    };
 }

@@ -19,11 +19,9 @@ TWITTER_ACCESS_TOKEN_SECRET=xxxxx
 ```
 
 ### Commands:
+**Note**: May need to give build-zip script permissions to execute (`chmod +x ./build.sh`)
 - Run locally in watch mode: `yarn local`
 - Run all tests: `yarn test`
 - Start server w/o watch mode: `yarn start`
 - Build and package into a zip: `yarn build-zip`
 - Rollback knex migrations: `yarn rollback`
-
-**Note**: May need to give build-zip script permissions to execute (`chmod +x ./build.sh`)
-

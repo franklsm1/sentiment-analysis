@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 
 const allStateKeywords = "#allstate,@allstate";
 const twitterService = new TwitterService();
-twitterService.createStream("#allstate,@allstate");
+twitterService.createStream(allStateKeywords);
 
 // Test API to validate wiring up with the client
 app.get('/api/hello', (req, res) => {
