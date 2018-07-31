@@ -1,5 +1,6 @@
 import Twitter from 'twitter';
 import Sentiment from 'sentiment';
+import SentimentDbService from './SentimentDbService';
 const sentiment = new Sentiment();
 
 export default class TwitterService {
@@ -10,6 +11,7 @@ export default class TwitterService {
             access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
             access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
+        this.sentimentDbService = new SentimentDbService();
     }
 
     createStream = (keywords) => {
@@ -21,11 +23,12 @@ export default class TwitterService {
             if (event.extended_tweet && event.lang === "en") {
                 let tweetObject = this.analyzeTweet(event);
                 tweetObject.keywords = keywords;
+                this.sentimentDbService.saveTweet(tweetObject);
             }
         });
 
         stream.on('error', (error) => {
-            throw error;
+            console.log(error)
         });
 
         return stream;
@@ -37,7 +40,7 @@ export default class TwitterService {
         return {
             id: event.id_str,
             sentiment: sentimentAnalysis.score,
-            created_date: event.created_at,
+            created_date: new Date(event.created_at),
             text: tweetText
         };
     };

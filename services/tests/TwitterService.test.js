@@ -13,27 +13,35 @@ function writeTweetToStream(text, options = {}) {
             full_text: text
         },
         lang: options.lang || "en"
-
-    })
+    });
 }
 
 describe('Service that uses the Twitter Streaming API', () => {
-    let twitterService
+    let twitterService;
     let steamStub;
 
-    beforeEach(() => {
+    beforeEach( () => {
         twitterService = new TwitterService();
         steamStub = sinon.stub(twitterService.client, "stream")
             .callsFake(() => mockStream);
     });
 
-    it('new tweet is analyzed with a sentiment score', () => {
-        twitterService.analyzeTweet = jest.fn().mockReturnValue({});
-        let testStream = twitterService.createStream("#test");
+    it('new tweet is analyzed with a sentiment score and saved to the DB', () => {
+        let mockAnalyzedTweet = {
+            id: "123",
+            sentiment: -5,
+            created_date: new Date(),
+            text: 'This is a negative #test tweet',
+        };
 
-        writeTweetToStream('This is a #test tweet');
+        twitterService.analyzeTweet = jest.fn().mockReturnValue(mockAnalyzedTweet);
+        twitterService.sentimentDbService = ({saveTweet : jest.fn()});
+        let testStream = twitterService.createStream("test");
+
+        writeTweetToStream(mockAnalyzedTweet.text);
 
         expect(steamStub.calledOnce).toBeTruthy();
+        expect(twitterService.sentimentDbService.saveTweet).toHaveBeenCalledTimes(1);
         expect(twitterService.analyzeTweet).toHaveBeenCalledTimes(1);
     });
 
@@ -41,7 +49,9 @@ describe('Service that uses the Twitter Streaming API', () => {
         twitterService.analyzeTweet = jest.fn().mockReturnValue({});
         let testStream = twitterService.createStream("#test");
 
-        writeTweetToStream('This is a japanese tweet', {lang: "jp"});
+        writeTweetToStream('This is a japanese tweet', {
+            lang: "jp"
+        });
 
         expect(steamStub.calledOnce).toBeTruthy();
         expect(twitterService.analyzeTweet).toHaveBeenCalledTimes(0);
@@ -51,7 +61,9 @@ describe('Service that uses the Twitter Streaming API', () => {
         twitterService.analyzeTweet = jest.fn().mockReturnValue({});
         let testStream = twitterService.createStream("#test");
 
-        writeTweetToStream('This is a japanese tweet', {isFullText: false});
+        writeTweetToStream('This is a japanese tweet', {
+            isFullText: false
+        });
 
         expect(steamStub.calledOnce).toBeTruthy();
         expect(twitterService.analyzeTweet).toHaveBeenCalledTimes(0);
@@ -68,7 +80,7 @@ describe('Service that uses the Twitter Streaming API', () => {
         let tweetAnalysis = twitterService.analyzeTweet(tweetEvent);
 
         expect(tweetAnalysis.id).toBe(tweetEvent.id_str);
-        expect(tweetAnalysis.created_date).toBe(tweetEvent.created_at);
+        expect(tweetAnalysis.created_date).toEqual(tweetEvent.created_at);
         expect(tweetAnalysis.text).toBe(tweetEvent.extended_tweet.full_text);
         expect(tweetAnalysis.sentiment).toBe(-5);
     });

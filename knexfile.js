@@ -1,8 +1,10 @@
 module.exports = {
-    client: 'mysql',
-    connection: {
-      user: process.env.dbUser ||'root',
-      password: process.env.dbPassword || '',
-      database: 'sentiment_db'
-    }
-  };
+  client: 'mysql',
+  connection: {
+    user: process.env.dbUser || 'root',
+    password: process.env.dbPassword || '',
+    database: 'sentiment_db',
+    timezone: 'UTC',
+    charset: 'utf8mb4'
+  }
+};

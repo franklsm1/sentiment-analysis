@@ -10,7 +10,7 @@ class App extends Component {
   componentDidMount() {
     this.callApi()
       .then(res => this.setState({ response: res.express }))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err.message));
   }
 
   callApi = async () => {
