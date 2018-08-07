@@ -24,4 +24,7 @@ TWITTER_ACCESS_TOKEN_SECRET=xxxxx
 - Run all tests: `yarn test`
 - Start server w/o watch mode: `yarn start`
 - Build and package into a zip: `yarn build-zip`
+- Run knex migrations: `yarn migrate`
+- Run knex migrations for test DB: `NODE_ENV=test yarn migrate`
 - Rollback knex migrations: `yarn rollback`
+- Rollback knex migrations for test DB: `NODE_ENV=test yarn rollback`

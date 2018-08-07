@@ -7,13 +7,8 @@ mockStream._read = () => {};
 mockStream.destroy = () => {};
 
 // Sends a Tweet event to the mock stream
-function writeTweetToStream(text, options = {}) {
-    mockStream.emit('data', {
-        extended_tweet: options.isFullText === false ? undefined : {
-            full_text: text
-        },
-        lang: options.lang || "en"
-    });
+function writeTweetToStream(event) {
+    mockStream.emit('data',event);
 }
 
 describe('Service that uses the Twitter Streaming API', () => {
@@ -38,7 +33,10 @@ describe('Service that uses the Twitter Streaming API', () => {
         twitterService.sentimentDbService = ({saveTweet : jest.fn()});
         let testStream = twitterService.createStream("test");
 
-        writeTweetToStream(mockAnalyzedTweet.text);
+        writeTweetToStream({
+            text: mockAnalyzedTweet.text,
+            lang: "en"
+        });
 
         expect(steamStub.calledOnce).toBeTruthy();
         expect(twitterService.sentimentDbService.saveTweet).toHaveBeenCalledTimes(1);
@@ -49,7 +47,8 @@ describe('Service that uses the Twitter Streaming API', () => {
         twitterService.analyzeTweet = jest.fn().mockReturnValue({});
         let testStream = twitterService.createStream("#test");
 
-        writeTweetToStream('This is a japanese tweet', {
+        writeTweetToStream( {
+            text: 'This is a japanese tweet',
             lang: "jp"
         });
 
@@ -61,8 +60,8 @@ describe('Service that uses the Twitter Streaming API', () => {
         twitterService.analyzeTweet = jest.fn().mockReturnValue({});
         let testStream = twitterService.createStream("#test");
 
-        writeTweetToStream('This is a japanese tweet', {
-            isFullText: false
+        writeTweetToStream({
+            retweeted_status: true
         });
 
         expect(steamStub.calledOnce).toBeTruthy();
@@ -72,6 +71,7 @@ describe('Service that uses the Twitter Streaming API', () => {
     it('analyze tweet returns tweet object with sentiment score', () => {
         let tweetEvent = {
             id_str: "123",
+            text: "analyze this...",
             created_at: new Date(),
             extended_tweet: {
                 full_text: "analyze this bad negative tweet"

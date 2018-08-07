@@ -12,6 +12,7 @@ export default class TwitterService {
             access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
         });
         this.sentimentDbService = new SentimentDbService();
+        this.activeStreams = [];
     }
 
     createStream = (keywords) => {
@@ -20,7 +21,8 @@ export default class TwitterService {
         });
 
         stream.on('data', (event) => {
-            if (event.extended_tweet && event.lang === "en") {
+            if (!event.retweeted_status && event.lang === "en") {
+                console.log(event);
                 let tweetObject = this.analyzeTweet(event);
                 tweetObject.keywords = keywords;
                 this.sentimentDbService.saveTweet(tweetObject);
@@ -31,11 +33,27 @@ export default class TwitterService {
             console.log(error)
         });
 
+        this.activeStreams.push(stream);
         return stream;
     };
 
+    startActiveStreams = async () => {
+        try {
+            let keywordsList = await this.sentimentDbService.getKeywordsByStatus("active");
+            keywordsList.forEach(keywords => {
+                this.createStream(keywords.value);
+            });
+            if (this.activeStreams.length === 0) {
+                const allStateKeywords = "#allstate,@allstate";
+                await this.sentimentDbService.saveKeywords(allStateKeywords);
+            }
+        } catch (e) {
+            console.log("error in startActiveStreams -->", e)
+        }
+    }
+
     analyzeTweet = (event) => {
-        let tweetText = event.extended_tweet.full_text;
+        let tweetText = event.extended_tweet ? event.extended_tweet.full_text : event.text;
         const sentimentAnalysis = sentiment.analyze(tweetText);
         return {
             id: event.id_str,

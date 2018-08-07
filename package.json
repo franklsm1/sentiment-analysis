@@ -8,9 +8,9 @@
     "client": "cd client && yarn start",
     "client-test": "cd client && yarn test",
     "local": "concurrently --kill-others-on-fail \"yarn nodemon\" \"yarn client\"",
-    "migrate": "knex migrate:latest",
+    "migrate": "NODE_ENV=$NODE_ENV knex migrate:latest",
     "nodemon": "nodemon server.js --exec babel-node",
-    "rollback": "knex migrate:rollback",
+    "rollback": "NODE_ENV=$NODE_ENV knex migrate:rollback",
     "start": "babel-node server.js",
     "test": "jest && yarn client-test"
   },
@@ -31,6 +31,7 @@
     "concurrently": "^3.6.0",
     "jest": "^23.4.2",
     "nodemon": "^1.18.3",
+    "pre-commit": "^1.2.2",
     "sinon": "^6.1.4"
   },
   "jest": {
