@@ -13,6 +13,7 @@ sentiment-analysis.zip
 
 # misc
 .DS_Store
+.idea/
 .vscode/
 .env.local
 .env.development.local

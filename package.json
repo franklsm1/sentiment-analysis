@@ -17,9 +17,6 @@
   "author": "Sean Franklin <franklsm1@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-2": "^6.24.1",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "knex": "^0.15.2",
@@ -28,8 +25,16 @@
     "twitter": "^1.7.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/runtime": "^7.5.5",
     "concurrently": "^3.6.0",
-    "jest": "^23.4.2",
+    "husky": "^3.0.1",
+    "jest": "^24.8.0",
     "nodemon": "^1.18.3",
     "pre-commit": "^1.2.2",
     "sinon": "^6.1.4"
@@ -41,5 +46,10 @@
       "<rootDir>/node_modules/",
       "<rootDir>/client/"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test"
+    }
   }
 }
