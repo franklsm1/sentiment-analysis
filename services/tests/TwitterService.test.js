@@ -1,87 +1,55 @@
-import TwitterService from "../TwitterService";
-import sinon from "sinon";
-import stream from "stream";
+import TwitterService, { baseTwitterSearchUrl, defaultFetchOptions } from "../TwitterService";
+import SentimentDbService from '../SentimentDbService';
+const fetchMock = require('node-fetch');
 
-const mockStream = new stream.Readable();
-mockStream._read = () => {};
-mockStream.destroy = () => {};
+jest.mock('../SentimentDbService');
 
-// Sends a Tweet event to the mock stream
-function writeTweetToStream(event) {
-    mockStream.emit('data',event);
-}
-
-describe('Service that uses the Twitter Streaming API', () => {
-    let twitterService;
-    let steamStub;
-
-    beforeEach( () => {
-        twitterService = new TwitterService();
-        steamStub = sinon.stub(twitterService.client, "stream")
-            .callsFake(() => mockStream);
+describe('Service gets latest tweets on startup', () => {
+    afterEach(() => {
+        fetchMock.reset();
     });
 
-    it('new tweet is analyzed with a sentiment score and saved to the DB', () => {
-        let mockAnalyzedTweet = {
-            id: "123",
-            sentiment: -5,
-            created_date: new Date(),
-            text: 'This is a negative #test tweet',
+    it('new tweets are analyzed with a sentiment score and saved to the DB', async () => {
+        const mockSearchResponse = {
+            statuses: [
+                {
+                    id: 123,
+                    id_str: "123",
+                    text: 'test tweet #allstate',
+                    created_at: new Date()
+                }
+            ],
+        };
+        const keywords = '#allstate OR @allstate';
+        const mockGetKeywordsByStatus = jest.fn().mockImplementation(() => Promise.resolve([{value: keywords}]));
+        const mockSaveTweet = jest.fn().mockImplementation(() => Promise.resolve('Success'));
+
+        SentimentDbService.mockImplementation(() => {
+            return {
+                getKeywordsByStatus: mockGetKeywordsByStatus,
+                saveTweet: mockSaveTweet,
+            }
+        });
+
+        fetchMock.mock("begin:" + baseTwitterSearchUrl, {
+            status: 200,
+            headers: defaultFetchOptions.headers,
+            body: mockSearchResponse
+        });
+
+        await new TwitterService();
+
+        let expectedAnalyzedTweet = {
+            id: mockSearchResponse.statuses[0].id_str,
+            keywords,
+            sentiment: 0,
+            created_date: mockSearchResponse.statuses[0].created_at,
+            text: mockSearchResponse.statuses[0].text,
         };
 
-        twitterService.analyzeTweet = jest.fn().mockReturnValue(mockAnalyzedTweet);
-        twitterService.sentimentDbService = ({saveTweet : jest.fn()});
-        let testStream = twitterService.createStream("test");
-
-        writeTweetToStream({
-            text: mockAnalyzedTweet.text,
-            lang: "en"
-        });
-
-        expect(steamStub.calledOnce).toBeTruthy();
-        expect(twitterService.sentimentDbService.saveTweet).toHaveBeenCalledTimes(1);
-        expect(twitterService.analyzeTweet).toHaveBeenCalledTimes(1);
-    });
-
-    it('new tweet is NOT analyzed if it is not in english', () => {
-        twitterService.analyzeTweet = jest.fn().mockReturnValue({});
-        let testStream = twitterService.createStream("#test");
-
-        writeTweetToStream( {
-            text: 'This is a japanese tweet',
-            lang: "jp"
-        });
-
-        expect(steamStub.calledOnce).toBeTruthy();
-        expect(twitterService.analyzeTweet).toHaveBeenCalledTimes(0);
-    });
-
-    it('new tweet is NOT analyzed if it is a retweet', () => {
-        twitterService.analyzeTweet = jest.fn().mockReturnValue({});
-        let testStream = twitterService.createStream("#test");
-
-        writeTweetToStream({
-            retweeted_status: true
-        });
-
-        expect(steamStub.calledOnce).toBeTruthy();
-        expect(twitterService.analyzeTweet).toHaveBeenCalledTimes(0);
-    });
-
-    it('analyze tweet returns tweet object with sentiment score', () => {
-        let tweetEvent = {
-            id_str: "123",
-            text: "analyze this...",
-            created_at: new Date(),
-            extended_tweet: {
-                full_text: "analyze this bad negative tweet"
-            }
-        }
-        let tweetAnalysis = twitterService.analyzeTweet(tweetEvent);
-
-        expect(tweetAnalysis.id).toBe(tweetEvent.id_str);
-        expect(tweetAnalysis.created_date).toEqual(tweetEvent.created_at);
-        expect(tweetAnalysis.text).toBe(tweetEvent.extended_tweet.full_text);
-        expect(tweetAnalysis.sentiment).toBe(-5);
+        expect(mockGetKeywordsByStatus).toHaveBeenCalledTimes(1);
+        expect(mockGetKeywordsByStatus).toHaveBeenCalledWith('active');
+        expect(mockSaveTweet).toHaveBeenCalledTimes(1);
+        expect(mockSaveTweet).toHaveBeenCalledWith(expectedAnalyzedTweet);
     });
 });

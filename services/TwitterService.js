@@ -1,65 +1,56 @@
-import Twitter from 'twitter';
 import Sentiment from 'sentiment';
+const fetch = require('node-fetch');
+import HttpsProxyAgent from 'https-proxy-agent';
 import SentimentDbService from './SentimentDbService';
 const sentiment = new Sentiment();
+export const baseTwitterSearchUrl = 'https://api.twitter.com/1.1/search/tweets.json';
+export const defaultFetchOptions = {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${process.env.TWITTER_BEARER_TOKEN}`,
+
+    },
+    agent: process.env.NETWORK_ENV === 'PROXY' ? new HttpsProxyAgent('http://webproxy.igslb.allstate.com:8080/'): ''
+};
 
 export default class TwitterService {
     constructor() {
-        this.client = new Twitter({
-            consumer_key: process.env.TWITTER_CONSUMER_KEY,
-            consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-            access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
-            access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
-        });
         this.sentimentDbService = new SentimentDbService();
-        this.activeStreams = [];
+        return this.startUp();
     }
 
-    createStream = (keywords) => {
-        let stream = this.client.stream('statuses/filter', {
-            track: keywords
-        });
-
-        stream.on('data', (event) => {
-            if (!event.retweeted_status && event.lang === "en") {
-                console.log(event);
-                let tweetObject = this.analyzeTweet(event);
-                tweetObject.keywords = keywords;
-                this.sentimentDbService.saveTweet(tweetObject);
-            }
-        });
-
-        stream.on('error', (error) => {
-            console.log(error)
-        });
-
-        this.activeStreams.push(stream);
-        return stream;
+    startUp = async () => {
+        let keywordsList = await this.sentimentDbService.getKeywordsByStatus("active");
+        await Promise.all(keywordsList.map(async (keywords) => {
+            const tweets = await this.getTweetsByKeywordsAndDate(keywords.value);
+            tweets.forEach((tweet) => this.saveTweet(keywords.value, tweet));
+        }));
     };
 
-    startActiveStreams = async () => {
-        try {
-            let keywordsList = await this.sentimentDbService.getKeywordsByStatus("active");
-            keywordsList.forEach(keywords => {
-                this.createStream(keywords.value);
-            });
-            if (this.activeStreams.length === 0) {
-                const allStateKeywords = "#allstate,@allstate";
-                await this.sentimentDbService.saveKeywords(allStateKeywords);
-            }
-        } catch (e) {
-            console.log("error in startActiveStreams -->", e)
-        }
-    }
+    saveTweet = (keywords, tweet) => {
+        console.log("tweet:", tweet.text);
+        let tweetObject = this.analyzeTweet(tweet);
+        tweetObject.keywords = keywords;
+        this.sentimentDbService.saveTweet(tweetObject);
+    };
 
-    analyzeTweet = (event) => {
-        let tweetText = event.extended_tweet ? event.extended_tweet.full_text : event.text;
-        const sentimentAnalysis = sentiment.analyze(tweetText);
+    analyzeTweet = (tweet) => {
+        const sentimentAnalysis = sentiment.analyze(tweet.text);
         return {
-            id: event.id_str,
+            id: tweet.id_str,
             sentiment: sentimentAnalysis.score,
-            created_date: new Date(event.created_at),
-            text: tweetText
+            created_date: new Date(tweet.created_at),
+            text: tweet.text
         };
     };
+
+    getTweetsByKeywordsAndDate = async (keywords, dateSince = new Date()) => {
+        const dateSinceFormatted = `${dateSince.getFullYear()}-${dateSince.getMonth()}-${dateSince.getDay()}`;
+        const queryParam = `${keywords} -filter:retweets since:${dateSinceFormatted}`;
+        console.log('encodeURIComponent(queryParam): ', encodeURIComponent(queryParam));
+
+        const response = await fetch(`${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en`, defaultFetchOptions);
+        const responseJson = await response.json();
+        return responseJson.statuses;
+    }
 }

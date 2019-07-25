@@ -9,15 +9,16 @@ export default class SentimentDbService {
     saveTweet = (analyzedTweet) => {
         if (analyzedTweet.text.length < 512) {
             return this.db('tweet').insert(analyzedTweet)
-                .then(tweet => {
-                    return true
-                })
                 .catch(error => {
-                    console.log("error saving tweet -->", error.message);
-                    return false;
+                    throw new Error("error saving tweet -->" + error.message);
                 });
         }
-        return null;
+    };
+
+    getTweetsByDateRange = (startDate, endDate = new Date()) => {
+        return this.db('tweet')
+            .where('created_date', '>=', startDate)
+            .where('created_date', '<=', endDate)
     };
 
     saveKeywords = (keywords) => {
@@ -26,21 +27,23 @@ export default class SentimentDbService {
                 status: "active",
                 created_date: new Date()
             })
-            .then(() => {
-                return true
-            })
             .catch(error => {
-                console.log("error saving keyword -->", error.message);
-                return false;
+                throw new Error("error saving keyword -->" + error.message);
             });
-    }
+    };
+
+    disableKeywords = (keywords) => {
+        return this.db("keywords")
+            .where('value', '=', keywords)
+            .update('status', 'disabled');
+    };
 
     getKeywordsByStatus = (status) => {
         return this.db('keywords')
             .where("status", status);
-    }
+    };
 
     getAllKeywords = () => {
         return this.db('keywords');
-    }
+    };
 }

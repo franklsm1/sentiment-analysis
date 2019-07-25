@@ -12,11 +12,10 @@
 1) Run migrations to create table and add test data to the DB: `yarn migrate`
 1) create a `.env` file and add valid twitter API credentials like so:
 ```
-TWITTER_CONSUMER_KEY=xxxxx
-TWITTER_CONSUMER_SECRET=xxxxx
-TWITTER_ACCESS_TOKEN_KEY=xxxxx
-TWITTER_ACCESS_TOKEN_SECRET=xxxxx
+NETWORK_ENV=
+TWITTER_BEARER_TOKEN=
 ```
+**Note:** `NETWORK_ENV` can either be 'PROXY' or empty. This tells the app whether to set the proxy if on a corporate internet.
 
 ### Commands:
 **Note**: May need to give build-zip script permissions to execute (`chmod +x ./build.sh`)

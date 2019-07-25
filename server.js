@@ -6,9 +6,8 @@ import TwitterService from "./services/TwitterService"
 const app = express();
 const port = process.env.PORT || 5000;
 
-const twitterService = new TwitterService();
-
-twitterService.startActiveStreams();
+//Initialize Twitter Service
+new TwitterService();
 
 // Test API to validate wiring up with the client
 app.get('/api/hello', (req, res) => {
