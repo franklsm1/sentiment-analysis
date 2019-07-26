@@ -45,9 +45,9 @@ export default class TwitterService {
     };
 
     getTweetsByKeywordsAndDate = async (keywords, dateSince = new Date()) => {
-        const dateSinceFormatted = `${dateSince.getFullYear()}-${dateSince.getMonth()}-${dateSince.getDay()}`;
+        const dateSinceFormatted = `${dateSince.getFullYear()}-${dateSince.getMonth() + 1}-${dateSince.getDate()}`;
         const queryParam = `${keywords} -filter:retweets since:${dateSinceFormatted}`;
-        console.log('encodeURIComponent(queryParam): ', encodeURIComponent(queryParam));
+        console.log('URIComponent(queryParam): ', queryParam);
 
         const response = await fetch(`${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en`, defaultFetchOptions);
         const responseJson = await response.json();
