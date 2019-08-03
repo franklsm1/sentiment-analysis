@@ -7,6 +7,14 @@ exports.up = function (knex) {
     t.dateTime('updated_date').defaultTo(knex.fn.now());
   })
     .then(() => {
+      return knex('keyword')
+        .insert({
+          value: '@allstate OR #allstate',
+          status: 'active',
+          created_date: new Date()
+        });
+    })
+    .then(() => {
       return knex.schema.createTable('post', function (t) {
         t.string('id').primary();
         t.string('type').notNullable();
