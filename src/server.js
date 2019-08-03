@@ -1,13 +1,13 @@
 import {} from 'dotenv/config';
 import express from 'express';
 import path from 'path';
-import TwitterService from "./services/TwitterService"
+import TwitterService from './services/TwitterService';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-//Initialize Twitter Service
-new TwitterService();
+// Start Twitter Service
+TwitterService();
 
 // Test API to validate wiring up with the client
 app.get('/api/hello', (req, res) => {
