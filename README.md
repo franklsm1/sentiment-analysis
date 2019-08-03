@@ -29,7 +29,7 @@
 ### Run MSSQL on Azure
 - Set `SENTIMENT_DB_SERVER`, `SENTIMENT_DB_USERNAME`, and `SENTIMENT_DB_PASSWORD` env vars
 - Run knex migrations for Azure MSSQL DB: `NODE_ENV=production yarn knex:migrate`
-- Start server: `NODE_ENV=production yarn start`
+- Start server: `yarn start:prod`
 
 ## Standards
 - This project uses [semistandard](https://standardjs.com/) eslint setup

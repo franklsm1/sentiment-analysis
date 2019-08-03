@@ -15,6 +15,7 @@
     "knex:create": "NODE_ENV=$NODE_ENV knex migrate:make --knexfile=src/knexfile.js $1",
     "knex:rollback": "NODE_ENV=$NODE_ENV knex migrate:rollback --knexfile=src/knexfile.js",
     "start": "NODE_ENV=$NODE_ENV yarn run build && node dist/server.js",
+    "start:prod": "NODE_ENV=production yarn run build && node dist/server.js",
     "start:watch": "NODE_ENV=$NODE_ENV yarn run build && nodemon dist/server.js",
     "test": "yarn lint && jest --coverage && yarn client:test"
   },

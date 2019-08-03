@@ -31,7 +31,7 @@ describe('Sentiment DB Service', () => {
 
     it('savePost saves a valid analyzed post object to the DB', async () => {
       await sentimentDbService.savePost(testPostToSave);
-      const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
+      const postsInDb = await sentimentDbService.getPostsByDateRange('1995-12-17', '2095-12-17');
 
       expect(postsInDb).toHaveLength(1);
       expect(postsInDb[0].id).toEqual(testPostToSave.id);
@@ -41,7 +41,7 @@ describe('Sentiment DB Service', () => {
     it('attempt to save duplicate post does not save duplicate', async () => {
       await sentimentDbService.savePost(testPostToSave);
       await sentimentDbService.savePost(testPostToSave);
-      const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
+      const postsInDb = await sentimentDbService.getPostsByDateRange('1995-12-17', '2095-12-17');
 
       expect(postsInDb).toHaveLength(1);
     });
@@ -49,10 +49,10 @@ describe('Sentiment DB Service', () => {
     it('getPostsByDateRange defaults to current date for endDate if none is passed in', async () => {
       const testPostHardCodedDate = {
         ...testPostToSave,
-        created_date: new Date('2019-7-25')
+        created_date: '2019-7-25'
       };
       await sentimentDbService.savePost(testPostHardCodedDate);
-      const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('2019-7-25'));
+      const postsInDb = await sentimentDbService.getPostsByDateRange('2019-7-25');
 
       expect(postsInDb).toHaveLength(1);
       expect(postsInDb[0].id).toEqual(testPostToSave.id);
@@ -62,10 +62,10 @@ describe('Sentiment DB Service', () => {
     it('getPostsByDateRange returns empty list if no posts in date range', async () => {
       const testPostHardCodedDate = {
         ...testPostToSave,
-        created_date: new Date('2019-7-24')
+        created_date: '2019-7-24'
       };
       await sentimentDbService.savePost(testPostHardCodedDate);
-      const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('2019-7-25'));
+      const postsInDb = await sentimentDbService.getPostsByDateRange('2019-7-25');
 
       expect(postsInDb).toHaveLength(0);
     });
@@ -73,16 +73,16 @@ describe('Sentiment DB Service', () => {
     it('getLatestPostIdByKeywordId returns most recent post id when one exists', async () => {
       const testPostHardCodedDate = {
         ...testPostToSave,
-        created_date: new Date('2019-7-24')
+        created_date: '2019-7-24'
       };
       const newestPostId = testPostHardCodedDate.id;
       await sentimentDbService.savePost(testPostHardCodedDate);
 
-      testPostHardCodedDate.created_date = new Date('2019-7-23');
+      testPostHardCodedDate.created_date = '2019-7-23';
       testPostHardCodedDate.id = '1234';
       await sentimentDbService.savePost(testPostHardCodedDate);
 
-      testPostHardCodedDate.created_date = new Date('2019-7-22');
+      testPostHardCodedDate.created_date = '2019-7-22';
       testPostHardCodedDate.id = '12345';
       await sentimentDbService.savePost(testPostHardCodedDate);
 
