@@ -9,6 +9,7 @@ node_modules
 
 # production
 /client/build
+/dist
 sentiment-analysis.zip
 .env
 

@@ -2,16 +2,16 @@
   "name": "sentiment-analysis",
   "version": "1.0.0",
   "description": "Sentiment analysis of tweets based on a keyword with a UI",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
+    "build": "babel src -d dist --ignore src/**/*.test.js",
     "build-zip": "./build.sh",
     "client": "cd client && yarn start",
     "client-test": "cd client && yarn test",
-    "local": "concurrently --kill-others-on-fail \"yarn nodemon\" \"yarn client\"",
+    "local": "concurrently --kill-others-on-fail \"yarn start\" \"yarn client\"",
     "migrate": "NODE_ENV=$NODE_ENV knex migrate:latest",
-    "nodemon": "nodemon server.js --exec babel-node",
     "rollback": "NODE_ENV=$NODE_ENV knex migrate:rollback",
-    "start": "babel-node server.js",
+    "start": "yarn run build && nodemon dist/server.js",
     "test": "jest --coverage --forceExit && yarn client-test"
   },
   "author": "Sean Franklin <franklsm1@gmail.com>",
@@ -28,7 +28,6 @@
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
-    "@babel/node": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",

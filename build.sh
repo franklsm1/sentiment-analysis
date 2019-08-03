@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
 cd client
-yarn install --production
+yarn install
 yarn build
 
 cd ..
 yarn install
 yarn test
-rm -rf node_modules
-yarn install --production
-zip -r sentiment-analysis package.json server.js node_modules client/build
+yarn build
+cp package.json ./dist
+cd dist
+yarn install --prod
+zip -r sentiment-analysis .

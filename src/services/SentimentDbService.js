@@ -10,7 +10,7 @@ export default class SentimentDbService {
         if (analyzedTweet.text.length < 512) {
             return this.db('tweet').insert(analyzedTweet)
                 .catch(error => {
-                    throw new Error("error saving tweet -->" + error.message);
+                    console.error("error saving tweet -->" + error.message);
                 });
         }
     };
@@ -28,7 +28,7 @@ export default class SentimentDbService {
                 created_date: new Date()
             })
             .catch(error => {
-                throw new Error("error saving keyword -->" + error.message);
+                console.error("error saving keyword -->" + error.message);
             });
     };
 

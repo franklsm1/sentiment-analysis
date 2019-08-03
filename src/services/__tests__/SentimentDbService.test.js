@@ -46,17 +46,12 @@ describe("Sentiment DB Service", () => {
         expect(tweetsInDb).toHaveLength(0);
     });
 
-    it("attempt to save duplicate tweet does not save properly", async () => {
-        let threwError = false;
-        try {
-            await sentimentDbService.saveTweet(testTweetToSave);
-            await sentimentDbService.saveTweet(testTweetToSave);
+    it("attempt to save duplicate tweet does not save duplicate", async () => {
+        await sentimentDbService.saveTweet(testTweetToSave);
+        await sentimentDbService.saveTweet(testTweetToSave);
+        const tweetsInDb = await sentimentDbService.getTweetsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
 
-        } catch (e) {
-            threwError = true;
-        }
-
-        expect(threwError).toBeTruthy();
+        expect(tweetsInDb).toHaveLength(1);
     });
 
     it("getTweetsByDateRange defaults to current date for endDate if none is passed in",async () => {
@@ -87,23 +82,18 @@ describe("Sentiment DB Service", () => {
         let keywords = "@test OR #test";
         await sentimentDbService.saveKeywords(keywords);
 
-        let activeKeywords = await sentimentDbService.getAllKeywords();
+        let allKeywords = await sentimentDbService.getAllKeywords();
 
-        expect(activeKeywords).toHaveLength(1);
-        expect(activeKeywords[0].value).toBe(keywords);
+        expect(allKeywords).toHaveLength(1);
+        expect(allKeywords[0].value).toBe(keywords);
     });
 
-    it("attempt to save duplicate keyword does not save properly", async () => {
-        let threwError = false;
-        try {
-            await sentimentDbService.saveKeywords("@test OR #test");
-            await sentimentDbService.saveKeywords("@test OR #test");
+    it("attempt to save duplicate keyword does not save duplicate", async () => {
+        await sentimentDbService.saveKeywords("@test OR #test");
+        await sentimentDbService.saveKeywords("@test OR #test");
+        let allKeywords = await sentimentDbService.getAllKeywords();
 
-        } catch (e) {
-            threwError = true;
-        }
-
-        expect(threwError).toBeTruthy();
+        expect(allKeywords).toHaveLength(1);
     });
 
     it("attempt to get only active keywords after saving three keywords and disabling one returns only two keywords", async () => {
