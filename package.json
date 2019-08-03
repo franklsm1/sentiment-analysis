@@ -15,13 +15,14 @@
     "knex:create": "NODE_ENV=$NODE_ENV knex migrate:make --knexfile=src/knexfile.js $1",
     "knex:rollback": "NODE_ENV=$NODE_ENV knex migrate:rollback --knexfile=src/knexfile.js",
     "start": "NODE_ENV=$NODE_ENV yarn run build && node dist/server.js",
-    "start:prod": "NODE_ENV=production yarn run build && node dist/server.js",
+    "start:prod": "NODE_ENV=production node server.js",
     "start:watch": "NODE_ENV=$NODE_ENV yarn run build && nodemon dist/server.js",
     "test": "yarn lint && jest --coverage && yarn client:test"
   },
   "author": "Sean Franklin <franklsm1@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@babel/runtime": "^7.5.5",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "https-proxy-agent": "^2.2.2",
@@ -38,7 +39,6 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@babel/runtime": "^7.5.5",
     "babel-eslint": "^10.0.2",
     "concurrently": "^3.6.0",
     "eslint": "^6.1.0",
