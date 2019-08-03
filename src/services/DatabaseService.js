@@ -1,12 +1,16 @@
-import config from '../knexfile';
 import knex from 'knex';
 
-export default class SentimentDbService {
+import config from '../knexfile';
+import * as SentimentService from './SentimentService';
+
+export default class DatabaseService {
   constructor () {
     this.db = knex(config[process.env.NODE_ENV || 'development']);
   }
 
-  savePost = (post) => {
+  savePost = (post, text) => {
+    post.sentiment = SentimentService.analyze(text);
+    console.log(`sentiment: ${post.sentiment} text: ${text}`);
     return this.db('post').insert(post)
       .catch(error => {
         console.error(`error saving post with type: ${post.type} -->` + error.message);

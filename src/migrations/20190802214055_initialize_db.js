@@ -9,7 +9,7 @@ exports.up = function (knex) {
     .then(() => {
       return knex('keyword')
         .insert({
-          value: '@allstate OR #allstate OR #NotInGoodHands',
+          value: '@allstate OR #allstate OR #NotInGoodHnds',
           status: 'active',
           created_date: new Date()
         });

@@ -4,8 +4,9 @@
   "description": "Sentiment analysis of tweets based on a keyword with a UI",
   "main": "server.js",
   "scripts": {
-    "build": "rm -rf dist && babel src -d dist --ignore src/**/*.test.js,src/migrations/**",
+    "build": "yarn clean && babel src -d dist --ignore src/**/*.test.js,src/migrations/**",
     "build:prod": "./build.sh",
+    "clean": "rm -rf dist && rm -rf coverage",
     "client": "cd client && yarn start",
     "client:test": "cd client && yarn test",
     "lint": "eslint src",
@@ -59,7 +60,7 @@
     "coverageThreshold": {
       "global": {
         "statements": 100,
-        "branches": 60,
+        "branches": 100,
         "functions": 100,
         "lines": 100
       }
