@@ -27,19 +27,19 @@ export default class TwitterService {
   };
 
   saveTweet = (keyword, tweet) => {
-    console.log('tweet:', tweet.text);
+    console.log('tweet:', tweet.full_text);
     const postObject = this.analyzeTweet(tweet);
     postObject.keyword_id = keyword.id;
     this.sentimentDbService.savePost(postObject);
   };
 
   analyzeTweet = (tweet) => {
-    const sentimentAnalysis = sentiment.analyze(tweet.text);
+    const sentimentAnalysis = sentiment.analyze(tweet.full_text);
     return {
       id: tweet.id_str,
       sentiment: sentimentAnalysis.score,
       created_date: new Date(tweet.created_at),
-      text: tweet.text,
+      text: tweet.full_text,
       type: 'TWITTER'
     };
   };
@@ -49,9 +49,10 @@ export default class TwitterService {
     const dateSinceFormatted = `${dateSince.getFullYear()}-${dateSince.getMonth() + 1}-${dateSince.getDate()}`;
     const queryParam = `${keyword.value} -filter:retweets -filter:quote since:${dateSinceFormatted}`;
     const sinceIdParam = latestPostId ? `&since_id=${latestPostId}` : '';
-    console.log('URL: ', `${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en${sinceIdParam}`);
+    const searchURL = `${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en&tweet_mode=extended${sinceIdParam}`;
+    console.log('URL: ', searchURL);
 
-    const response = await fetch(`${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en${sinceIdParam}`, defaultFetchOptions);
+    const response = await fetch(searchURL, defaultFetchOptions);
     const responseJson = await response.json();
     return responseJson.statuses;
   };

@@ -15,7 +15,7 @@ describe('Service gets latest tweets on startup', () => {
         {
           id: 123,
           id_str: '123',
-          text: 'test tweet #allstate',
+          full_text: 'test tweet #allstate',
           created_at: new Date()
         }
       ]
@@ -55,7 +55,7 @@ describe('Service gets latest tweets on startup', () => {
       keyword_id: keywordId,
       sentiment: 0,
       created_date: mockSearchResponse.statuses[0].created_at,
-      text: mockSearchResponse.statuses[0].text,
+      text: mockSearchResponse.statuses[0].full_text,
       type: 'TWITTER'
     };
 
