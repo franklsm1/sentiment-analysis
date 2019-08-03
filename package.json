@@ -4,17 +4,18 @@
   "description": "Sentiment analysis of tweets based on a keyword with a UI",
   "main": "server.js",
   "scripts": {
-    "build": "rm -rf dist && babel src -d dist --ignore src/**/*.test.js",
+    "build": "rm -rf dist && babel src -d dist --ignore src/**/*.test.js,src/migrations/**",
     "build:prod": "./build.sh",
     "client": "cd client && yarn start",
     "client:test": "cd client && yarn test",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "local": "concurrently --kill-others-on-fail \"yarn start\" \"yarn client\"",
-    "migrate": "NODE_ENV=$NODE_ENV knex migrate:latest",
-    "rollback": "NODE_ENV=$NODE_ENV knex migrate:rollback",
+    "knex:migrate": "NODE_ENV=$NODE_ENV knex migrate:latest --knexfile=src/knexfile.js",
+    "knex:create": "NODE_ENV=$NODE_ENV knex migrate:make --knexfile=src/knexfile.js $1",
+    "knex:rollback": "NODE_ENV=$NODE_ENV knex migrate:rollback --knexfile=src/knexfile.js",
     "start": "yarn run build && nodemon dist/server.js",
-    "test": "yarn lint && jest --coverage --forceExit && yarn client:test"
+    "test": "yarn lint && jest --coverage && yarn client:test"
   },
   "author": "Sean Franklin <franklsm1@gmail.com>",
   "license": "ISC",

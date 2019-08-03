@@ -3,12 +3,13 @@ import SentimentDbService from '../SentimentDbService';
 describe('Sentiment DB Service', () => {
   let sentimentDbService;
   const date = new Date();
-  const testTweetToSave = {
+  const testPostToSave = {
     id: '123',
     sentiment: -5,
     created_date: date,
     text: 'fake negative tweet text',
-    keywords: 'test'
+    type: 'TWITTER',
+    keyword: 'test'
   };
 
   beforeAll(() => {
@@ -16,22 +17,26 @@ describe('Sentiment DB Service', () => {
   });
 
   beforeEach(async () => {
-    await sentimentDbService.db('tweet').del();
-    await sentimentDbService.db('keywords').del();
+    await sentimentDbService.db('post').del();
+    await sentimentDbService.db('keyword').del();
   });
 
-  it('saveTweet saves a valid analyzed tweet object to the DB', async () => {
-    await sentimentDbService.saveTweet(testTweetToSave);
-    const tweetsInDb = await sentimentDbService.getTweetsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
-
-    expect(tweetsInDb).toHaveLength(1);
-    expect(tweetsInDb[0].id).toEqual(testTweetToSave.id);
-    expect(tweetsInDb[0].text).toEqual(testTweetToSave.text);
+  afterAll(() => {
+    sentimentDbService.db.destroy();
   });
 
-  it('saveTweet with text longer then 512 characters does not save', async () => {
+  it('savePost saves a valid analyzed post object to the DB', async () => {
+    await sentimentDbService.savePost(testPostToSave);
+    const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
+
+    expect(postsInDb).toHaveLength(1);
+    expect(postsInDb[0].id).toEqual(testPostToSave.id);
+    expect(postsInDb[0].text).toEqual(testPostToSave.text);
+  });
+
+  it('savePost with text longer then 512 characters does not save', async () => {
     const longTestToSave = {
-      ...testTweetToSave,
+      ...testPostToSave,
       text: 'dslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksldjflksdjflksjdflksjdflkfjsldfkjsd' +
                     'jhflksjdhfdslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksldjflksdjflksjdflksjdflkfj' +
                     'sldfkjsdjhflksjdhfdslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksldjflksdjflksjdflk' +
@@ -40,67 +45,67 @@ describe('Sentiment DB Service', () => {
                     'jflksdjflksjdflksjdflkfjsldfkjsdjhflksjdhf'
     };
 
-    await sentimentDbService.saveTweet(longTestToSave);
-    const tweetsInDb = await sentimentDbService.getTweetsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
+    await sentimentDbService.savePost(longTestToSave);
+    const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
 
-    expect(tweetsInDb).toHaveLength(0);
+    expect(postsInDb).toHaveLength(0);
   });
 
-  it('attempt to save duplicate tweet does not save duplicate', async () => {
-    await sentimentDbService.saveTweet(testTweetToSave);
-    await sentimentDbService.saveTweet(testTweetToSave);
-    const tweetsInDb = await sentimentDbService.getTweetsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
+  it('attempt to save duplicate post does not save duplicate', async () => {
+    await sentimentDbService.savePost(testPostToSave);
+    await sentimentDbService.savePost(testPostToSave);
+    const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
 
-    expect(tweetsInDb).toHaveLength(1);
+    expect(postsInDb).toHaveLength(1);
   });
 
-  it('getTweetsByDateRange defaults to current date for endDate if none is passed in', async () => {
-    const testTweetHardCodedDate = {
-      ...testTweetToSave,
+  it('getPostsByDateRange defaults to current date for endDate if none is passed in', async () => {
+    const testPostHardCodedDate = {
+      ...testPostToSave,
       created_date: new Date('2019-7-25')
     };
-    await sentimentDbService.saveTweet(testTweetHardCodedDate);
-    const tweetsInDb = await sentimentDbService.getTweetsByDateRange(new Date('2019-7-25'));
+    await sentimentDbService.savePost(testPostHardCodedDate);
+    const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('2019-7-25'));
 
-    expect(tweetsInDb).toHaveLength(1);
-    expect(tweetsInDb[0].id).toEqual(testTweetToSave.id);
-    expect(tweetsInDb[0].text).toEqual(testTweetToSave.text);
+    expect(postsInDb).toHaveLength(1);
+    expect(postsInDb[0].id).toEqual(testPostToSave.id);
+    expect(postsInDb[0].text).toEqual(testPostToSave.text);
   });
 
-  it('getTweetsByDateRange returns empty list if no tweets in date range', async () => {
-    const testTweetHardCodedDate = {
-      ...testTweetToSave,
+  it('getPostsByDateRange returns empty list if no posts in date range', async () => {
+    const testPostHardCodedDate = {
+      ...testPostToSave,
       created_date: new Date('2019-7-24')
     };
-    await sentimentDbService.saveTweet(testTweetHardCodedDate);
-    const tweetsInDb = await sentimentDbService.getTweetsByDateRange(new Date('2019-7-25'));
+    await sentimentDbService.savePost(testPostHardCodedDate);
+    const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('2019-7-25'));
 
-    expect(tweetsInDb).toHaveLength(0);
+    expect(postsInDb).toHaveLength(0);
   });
 
   it('attempt to save new keyword saves properly', async () => {
-    const keywords = '@test OR #test';
-    await sentimentDbService.saveKeywords(keywords);
+    const keyword = '@test OR #test';
+    await sentimentDbService.saveKeyword(keyword);
 
     const allKeywords = await sentimentDbService.getAllKeywords();
 
     expect(allKeywords).toHaveLength(1);
-    expect(allKeywords[0].value).toBe(keywords);
+    expect(allKeywords[0].value).toBe(keyword);
   });
 
   it('attempt to save duplicate keyword does not save duplicate', async () => {
-    await sentimentDbService.saveKeywords('@test OR #test');
-    await sentimentDbService.saveKeywords('@test OR #test');
+    await sentimentDbService.saveKeyword('@test OR #test');
+    await sentimentDbService.saveKeyword('@test OR #test');
     const allKeywords = await sentimentDbService.getAllKeywords();
 
     expect(allKeywords).toHaveLength(1);
   });
 
   it('attempt to get only active keywords after saving three keywords and disabling one returns only two keywords', async () => {
-    await sentimentDbService.saveKeywords('@test OR #test');
-    await sentimentDbService.saveKeywords('@test2 OR #test2');
-    await sentimentDbService.saveKeywords('@test3 OR #test3');
-    await sentimentDbService.disableKeywords('@test OR #test');
+    await sentimentDbService.saveKeyword('@test OR #test');
+    await sentimentDbService.saveKeyword('@test2 OR #test2');
+    await sentimentDbService.saveKeyword('@test3 OR #test3');
+    await sentimentDbService.disableKeyword('@test OR #test');
     const activeKeywords = await sentimentDbService.getKeywordsByStatus('active');
 
     expect(activeKeywords).toHaveLength(2);
@@ -109,10 +114,10 @@ describe('Sentiment DB Service', () => {
   });
 
   it('attempt to get all keywords after saving three keywords and disabling one returns three keywords', async () => {
-    await sentimentDbService.saveKeywords('@test OR #test');
-    await sentimentDbService.saveKeywords('@test2 OR #test2');
-    await sentimentDbService.saveKeywords('@test3 OR #test3');
-    await sentimentDbService.disableKeywords('@test OR #test');
+    await sentimentDbService.saveKeyword('@test OR #test');
+    await sentimentDbService.saveKeyword('@test2 OR #test2');
+    await sentimentDbService.saveKeyword('@test3 OR #test3');
+    await sentimentDbService.disableKeyword('@test OR #test');
     const activeKeywords = await sentimentDbService.getAllKeywords();
 
     expect(activeKeywords).toHaveLength(3);

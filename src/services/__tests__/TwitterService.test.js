@@ -20,14 +20,14 @@ describe('Service gets latest tweets on startup', () => {
         }
       ]
     };
-    const keywords = '#allstate OR @allstate';
-    const mockGetKeywordsByStatus = jest.fn().mockImplementation(() => Promise.resolve([{ value: keywords }]));
-    const mockSaveTweet = jest.fn().mockImplementation(() => Promise.resolve('Success'));
+    const keyword = '#allstate OR @allstate';
+    const mockGetKeywordsByStatus = jest.fn().mockImplementation(() => Promise.resolve([{ value: keyword }]));
+    const mockSavePost = jest.fn().mockImplementation(() => Promise.resolve('Success'));
 
     SentimentDbService.mockImplementation(() => {
       return {
         getKeywordsByStatus: mockGetKeywordsByStatus,
-        saveTweet: mockSaveTweet
+        savePost: mockSavePost
       };
     });
 
@@ -41,15 +41,16 @@ describe('Service gets latest tweets on startup', () => {
 
     const expectedAnalyzedTweet = {
       id: mockSearchResponse.statuses[0].id_str,
-      keywords,
+      keyword,
       sentiment: 0,
       created_date: mockSearchResponse.statuses[0].created_at,
-      text: mockSearchResponse.statuses[0].text
+      text: mockSearchResponse.statuses[0].text,
+      type: 'TWITTER'
     };
 
     expect(mockGetKeywordsByStatus).toHaveBeenCalledTimes(1);
     expect(mockGetKeywordsByStatus).toHaveBeenCalledWith('active');
-    expect(mockSaveTweet).toHaveBeenCalledTimes(1);
-    expect(mockSaveTweet).toHaveBeenCalledWith(expectedAnalyzedTweet);
+    expect(mockSavePost).toHaveBeenCalledTimes(1);
+    expect(mockSavePost).toHaveBeenCalledWith(expectedAnalyzedTweet);
   });
 });

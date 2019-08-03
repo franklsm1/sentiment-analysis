@@ -6,44 +6,44 @@ export default class SentimentDbService {
     this.db = knex(config[process.env.NODE_ENV || 'development']);
   }
 
-    saveTweet = (analyzedTweet) => {
-      if (analyzedTweet.text.length < 512) {
-        return this.db('tweet').insert(analyzedTweet)
-          .catch(error => {
-            console.error('error saving tweet -->' + error.message);
-          });
-      }
-    };
-
-    getTweetsByDateRange = (startDate, endDate = new Date()) => {
-      return this.db('tweet')
-        .where('created_date', '>=', startDate)
-        .where('created_date', '<=', endDate);
-    };
-
-    saveKeywords = (keywords) => {
-      return this.db('keywords').insert({
-        value: keywords,
-        status: 'active',
-        created_date: new Date()
-      })
+  savePost = (post) => {
+    if (post.text.length < 512) {
+      return this.db('post').insert(post)
         .catch(error => {
-          console.error('error saving keyword -->' + error.message);
+          console.error(`error saving post with type: ${post.type} -->` + error.message);
         });
-    };
+    }
+  };
 
-    disableKeywords = (keywords) => {
-      return this.db('keywords')
-        .where('value', '=', keywords)
-        .update('status', 'disabled');
-    };
+  getPostsByDateRange = (startDate, endDate = new Date()) => {
+    return this.db('post')
+      .where('created_date', '>=', startDate)
+      .where('created_date', '<=', endDate);
+  };
 
-    getKeywordsByStatus = (status) => {
-      return this.db('keywords')
-        .where('status', status);
-    };
+  saveKeyword = (keyword) => {
+    return this.db('keyword').insert({
+      value: keyword,
+      status: 'active',
+      created_date: new Date()
+    })
+      .catch(error => {
+        console.error(`error saving keyword: ${keyword} -->` + error.message);
+      });
+  };
 
-    getAllKeywords = () => {
-      return this.db('keywords');
-    };
+  disableKeyword = (keyword) => {
+    return this.db('keyword')
+      .where('value', '=', keyword)
+      .update('status', 'disabled');
+  };
+
+  getKeywordsByStatus = (status) => {
+    return this.db('keyword')
+      .where('status', status);
+  };
+
+  getAllKeywords = () => {
+    return this.db('keyword');
+  };
 }
