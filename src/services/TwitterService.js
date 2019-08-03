@@ -16,21 +16,20 @@ export const defaultFetchOptions = {
 export default class TwitterService {
   constructor () {
     this.sentimentDbService = new SentimentDbService();
-    return this.startUp();
   }
 
-  startUp = async () => {
+  getNewTweets = async () => {
     const keywordList = await this.sentimentDbService.getKeywordsByStatus('active');
     await Promise.all(keywordList.map(async (keyword) => {
-      const tweets = await this.getTweetsByKeywordAndDate(keyword.value);
-      tweets.forEach((tweet) => this.saveTweet(keyword.value, tweet));
+      const tweets = await this.getTweetsByKeywordAndDate(keyword);
+      tweets.forEach((tweet) => this.saveTweet(keyword, tweet));
     }));
   };
 
   saveTweet = (keyword, tweet) => {
     console.log('tweet:', tweet.text);
     const postObject = this.analyzeTweet(tweet);
-    postObject.keyword = keyword;
+    postObject.keyword_id = keyword.id;
     this.sentimentDbService.savePost(postObject);
   };
 
@@ -45,13 +44,15 @@ export default class TwitterService {
     };
   };
 
-  getTweetsByKeywordAndDate = async (keywords, dateSince = new Date()) => {
+  getTweetsByKeywordAndDate = async (keyword, dateSince = new Date()) => {
+    const latestPostId = await this.sentimentDbService.getLatestPostIdByKeywordId(keyword.id);
     const dateSinceFormatted = `${dateSince.getFullYear()}-${dateSince.getMonth() + 1}-${dateSince.getDate()}`;
-    const queryParam = `${keywords} -filter:retweets since:${dateSinceFormatted}`;
-    console.log('URIComponent(queryParam): ', queryParam);
+    const queryParam = `${keyword.value} -filter:retweets -filter:quote since:${dateSinceFormatted}`;
+    const sinceIdParam = latestPostId ? `&since_id=${latestPostId}` : '';
+    console.log('URL: ', `${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en${sinceIdParam}`);
 
-    const response = await fetch(`${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en`, defaultFetchOptions);
+    const response = await fetch(`${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en${sinceIdParam}`, defaultFetchOptions);
     const responseJson = await response.json();
     return responseJson.statuses;
-  }
+  };
 }

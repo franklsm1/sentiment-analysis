@@ -46,4 +46,20 @@ export default class SentimentDbService {
   getAllKeywords = () => {
     return this.db('keyword');
   };
+
+  getLatestPostIdByKeywordId = async (keywordId) => {
+    try {
+      const latestCreatedDates = await this.db('post')
+        .max({ latestCreatedDate: 'created_date' })
+        .where('keyword_id', '=', keywordId)
+        .groupBy('keyword_id');
+
+      const latestPostIds = await this.db('post')
+        .select('id')
+        .where('created_date', '=', latestCreatedDates[0]['latestCreatedDate']);
+      return latestPostIds[0].id;
+    } catch (error) {
+      console.error(`error getting latest post id for keyword: ${keywordId} -->` + error.message);
+    }
+  }
 }

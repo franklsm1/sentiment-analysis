@@ -10,10 +10,11 @@ exports.up = function (knex) {
       return knex.schema.createTable('post', function (t) {
         t.string('id').primary();
         t.string('type').notNullable();
-        t.string('keyword').notNullable();
+        t.integer('keyword_id').unsigned().notNullable();
         t.string('text', 512).notNullable();
         t.integer('sentiment').notNullable();
         t.dateTime('created_date');
+        t.foreign('keyword_id').references('id').inTable('keyword');
       });
     });
 };

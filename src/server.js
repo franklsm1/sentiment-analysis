@@ -1,14 +1,18 @@
 import {} from 'dotenv/config';
 import express from 'express';
 import path from 'path';
+import cron from 'node-cron';
+
 import TwitterService from './services/TwitterService';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Start Twitter Service
-// eslint-disable-next-line no-new
-new TwitterService();
+const twitterService = new TwitterService();
+// Check for new tweets every minute
+cron.schedule('* * * * *', () => {
+  twitterService.getNewTweets();
+});
 
 // Test API to validate wiring up with the client
 app.get('/api/hello', (req, res) => {

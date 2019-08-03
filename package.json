@@ -25,6 +25,7 @@
     "https-proxy-agent": "^2.2.2",
     "knex": "^0.15.2",
     "mysql": "^2.16.0",
+    "node-cron": "^2.0.3",
     "node-fetch": "^2.6.0",
     "sentiment": "^5.0.1"
   },
@@ -55,7 +56,7 @@
     "coverageThreshold": {
       "global": {
         "statements": 100,
-        "branches": 85,
+        "branches": 83,
         "functions": 100,
         "lines": 100
       }
