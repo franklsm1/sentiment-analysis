@@ -7,12 +7,10 @@ export default class SentimentDbService {
   }
 
   savePost = (post) => {
-    if (post.text.length < 512) {
-      return this.db('post').insert(post)
-        .catch(error => {
-          console.error(`error saving post with type: ${post.type} -->` + error.message);
-        });
-    }
+    return this.db('post').insert(post)
+      .catch(error => {
+        console.error(`error saving post with type: ${post.type} -->` + error.message);
+      });
   };
 
   getPostsByDateRange = (startDate, endDate = new Date()) => {

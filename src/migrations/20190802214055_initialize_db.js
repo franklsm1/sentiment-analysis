@@ -11,7 +11,6 @@ exports.up = function (knex) {
         t.string('id').primary();
         t.string('type').notNullable();
         t.integer('keyword_id').unsigned().notNullable();
-        t.string('text', 512).notNullable();
         t.integer('sentiment').notNullable();
         t.dateTime('created_date');
         t.foreign('keyword_id').references('id').inTable('keyword');

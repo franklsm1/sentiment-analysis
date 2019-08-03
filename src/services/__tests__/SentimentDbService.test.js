@@ -7,7 +7,6 @@ describe('Sentiment DB Service', () => {
     id: '123',
     sentiment: -5,
     created_date: date,
-    text: 'fake negative tweet text',
     type: 'TWITTER'
   };
 
@@ -37,23 +36,6 @@ describe('Sentiment DB Service', () => {
       expect(postsInDb).toHaveLength(1);
       expect(postsInDb[0].id).toEqual(testPostToSave.id);
       expect(postsInDb[0].text).toEqual(testPostToSave.text);
-    });
-
-    it('savePost with text longer then 512 characters does not save', async () => {
-      const longTestToSave = {
-        ...testPostToSave,
-        text: 'dslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksldjflksdjflksjdflksjdflkfjsldfkjsd' +
-                    'jhflksjdhfdslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksldjflksdjflksjdflksjdflkfj' +
-                    'sldfkjsdjhflksjdhfdslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksldjflksdjflksjdflk' +
-                    'sjdflkfjsldfkjsdjhflksjdhfdslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksldjflksdjf' +
-                    'lksjdflksjdflkfjsldfkjsdjhflksjdhfdslljdflkasjdlfkjslkdfjsldfjlksdjfslkdjflksdjflksdjflksdjfksld' +
-                    'jflksdjflksjdflksjdflkfjsldfkjsdjhflksjdhf'
-      };
-
-      await sentimentDbService.savePost(longTestToSave);
-      const postsInDb = await sentimentDbService.getPostsByDateRange(new Date('1995-12-17'), new Date('2095-12-17'));
-
-      expect(postsInDb).toHaveLength(0);
     });
 
     it('attempt to save duplicate post does not save duplicate', async () => {

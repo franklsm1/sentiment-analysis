@@ -4,9 +4,8 @@ module.exports = {
     connection: {
       user: process.env.sentimentDbUser || 'root',
       password: process.env.sentimentDbPassword || '',
-      database: 'sentiment_db',
-      timezone: 'UTC',
-      charset: 'utf8mb4'
+      database: 'sentiment',
+      timezone: 'UTC'
     }
   },
   test: {
@@ -14,9 +13,8 @@ module.exports = {
     connection: {
       user: process.env.sentimentDbUser || 'root',
       password: process.env.sentimentDbPassword || '',
-      database: 'sentiment_db_test',
-      timezone: 'UTC',
-      charset: 'utf8mb4'
+      database: 'sentiment_test',
+      timezone: 'UTC'
     }
   }
 };

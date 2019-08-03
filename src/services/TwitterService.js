@@ -39,7 +39,6 @@ export default class TwitterService {
       id: tweet.id_str,
       sentiment: sentimentAnalysis.score,
       created_date: new Date(tweet.created_at),
-      text: tweet.full_text,
       type: 'TWITTER'
     };
   };

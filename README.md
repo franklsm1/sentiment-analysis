@@ -4,12 +4,13 @@
 1) install MySQL (on a mac) with: `brew install mysql`
 1) start MySQL with: `mysql.server start`
 1) access MySQL with: `mysql -u root`
-1) inside of MySQL run the following command to create the databases that this app uses: `create database sentiment_db;`
-1) Add an initial keyword to the DB: `insert into keyword(value, status, created_date) values('@allstate OR #allstate','active',SYSDATE());`
+1) inside of MySQL run the following command to create the databases that this app uses: `create database sentiment; create database sentiment_test;`
+1) Switch to each DB: `use sentiemnt;` and `use sentiment_test;` 
+1) Add an initial search keyword to each DB: `insert into keyword(value, status, created_date) values('@allstate OR #allstate','active',SYSDATE());`
 1) exit mysql CLI: `exit`
 
 ### Setup required to start app (after mysql is started)
-1) Run migrations to create table and add test data to the DB: `yarn knex:migrate`
+1) Run migrations to create table and add test data to the DB: `yarn knex:migrate` and `NODE_ENV=test yarn knex:migrate`
 1) Create a `.env` file and add a valid twitter bearer token for the `TWITTER_BEARER_TOKEN` env property
 
 **Note**: If a proxy is required, ensure the `YARN_PROXY` env variable is set

@@ -4,6 +4,7 @@ import path from 'path';
 import cron from 'node-cron';
 
 import TwitterService from './services/TwitterService';
+import SentimentDbService from './services/SentimentDbService';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -14,11 +15,17 @@ cron.schedule('* * * * *', () => {
   twitterService.getNewTweets();
 });
 
-// Test API to validate wiring up with the client
-app.get('/api/hello', (req, res) => {
-  res.send({
-    express: 'Hello From Express'
-  });
+const sentimentDbService = new SentimentDbService();
+app.get('/api/v1/posts', async (req, res) => {
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  const posts = await sentimentDbService.getPostsByDateRange(startDate, endDate);
+  res.send(posts);
+});
+
+app.get('/api/v1/keywords', async (req, res) => {
+  const keywords = await sentimentDbService.getAllKeywords();
+  res.send(keywords);
 });
 
 if (process.env.NODE_ENV === 'production') {
