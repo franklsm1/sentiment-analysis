@@ -4,7 +4,7 @@
   "description": "Sentiment analysis of tweets based on a keyword with a UI",
   "main": "server.js",
   "scripts": {
-    "build": "yarn clean && babel src -d dist --ignore src/**/*.test.js,src/migrations/**",
+    "build": "babel src -d dist --ignore src/**/*.test.js,src/migrations/**",
     "build:prod": "./build.sh",
     "clean": "rm -rf dist && rm -rf coverage",
     "client": "cd client && yarn start",
