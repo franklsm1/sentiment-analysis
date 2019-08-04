@@ -1,5 +1,6 @@
 import {} from 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import path from 'path';
 import cron from 'node-cron';
 
@@ -15,14 +16,13 @@ const twitterService = new TwitterService();
 // Check for new tweets every minute
 cron.schedule('* * * * *', () => twitterService.getNewTweets());
 
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(baseApiEndpoint + '/posts', posts);
 app.use(baseApiEndpoint + '/keywords', keywords);
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client')));
-  app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, 'client', 'index.html'));
-  });
-}
+app.use(express.static(path.join(__dirname, 'client')));
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'client', 'index.html'));
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

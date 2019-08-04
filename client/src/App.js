@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
 import './App.css';
+import Timeline from "./components/Timeline";
+import Grid from "@material-ui/core/Grid";
+import KeywordTable from "./components/KeywordsTable";
+import NavBar from "./components/NavBar";
+import SentimentPieChart from "./components/SentimentPieChart";
+
+const host = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
 
 class App extends Component {
   state = {
@@ -8,30 +15,54 @@ class App extends Component {
   };
 
   componentDidMount () {
-    this.callApi()
-      .then(res => this.setState({ response: res[0].value }))
-      .catch(err => console.log(err.message));
+    this.getKeywords();
+    this.getPostsFromToday();
   }
 
-  callApi = async () => {
-    const response = await fetch('/api/v1/keywords');
+  getKeywords = async () => {
+    const response = await fetch(`${host}/api/v1/keywords`);
     const body = await response.json();
 
-    if (response.status !== 200) throw Error(body.message);
+    if (response.status !== 200) {
+      return console.log(body.message);
+    }
 
-    return body;
+    this.setState({ keywords: body });
+  };
+
+  getPostsFromToday = async () => {
+    const today = new Date();
+    const todaysDate = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+    const response = await fetch(`${host}/api/v1/posts?startDate=${todaysDate}`);
+    const body = await response.json();
+
+    if (response.status !== 200) {
+      return console.log(body.message);
+    }
+
+    this.setState({ posts: body });
   };
 
   render () {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          {this.state.response}
-        </p>
+        <NavBar/>
+        <Grid
+            container
+            spacing={3}
+            direction="row"
+            justify="flex-end"
+            alignItems="center"
+        >
+          <Grid item xs/>
+          <Grid item xs>
+            {this.state.keywords && <KeywordTable keywords={this.state.keywords} />}
+            {this.state.posts && <SentimentPieChart posts={this.state.posts}/>}
+          </Grid>
+          <Grid item xs className="MuiGrid-align-items-xs-flex-end">
+            {this.state.posts && <Timeline posts={this.state.posts}/>}
+          </Grid>
+        </Grid>
       </div>
     );
   }

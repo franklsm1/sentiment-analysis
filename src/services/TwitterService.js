@@ -41,7 +41,7 @@ export default class TwitterService {
 
   getLatestTweetsByKeyword = async (keyword) => {
     const latestPostId = await this.databaseService.getLatestPostIdByKeywordId(keyword.id);
-    const queryParam = `${keyword.value} -filter:retweets -filter:quote`;
+    const queryParam = `${keyword.value} -filter:retweets -filter:quote -filter:replies`;
     const sinceIdParam = latestPostId ? `&since_id=${latestPostId}` : '';
     const searchURL = `${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en&tweet_mode=extended${sinceIdParam}`;
     console.log('URL: ', searchURL);
