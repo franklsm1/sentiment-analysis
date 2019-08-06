@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 
 import './App.css';
-import Timeline from "./components/Timeline";
 import Grid from "@material-ui/core/Grid";
 import KeywordTable from "./components/KeywordsTable";
 import NavBar from "./components/NavBar";
 import SentimentPieChart from "./components/SentimentPieChart";
+import SentimentPostList from "./components/SentimentPostList";
+import Card from "@material-ui/core/Card";
+import { CardContent } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 const host = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
 
@@ -16,7 +19,7 @@ class App extends Component {
 
   componentDidMount () {
     this.getKeywords();
-    this.getPostsFromToday();
+    this.getPostsFromLastTwoDays();
   }
 
   getKeywords = async () => {
@@ -30,9 +33,9 @@ class App extends Component {
     this.setState({ keywords: body });
   };
 
-  getPostsFromToday = async () => {
+  getPostsFromLastTwoDays = async () => {
     const today = new Date();
-    const todaysDate = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+    const todaysDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
     const response = await fetch(`${host}/api/v1/posts?startDate=${todaysDate}`);
     const body = await response.json();
 
@@ -40,7 +43,19 @@ class App extends Component {
       return console.log(body.message);
     }
 
-    this.setState({ posts: body });
+    let posts ={negative:[], neutral: [], positive: []};
+    posts = body.reduce((reduced, post) => {
+      if (post.sentiment < -2) {
+        reduced.negative.push(post);
+      } else if (post.sentiment > 2) {
+        reduced.positive.push(post)
+      } else {
+        reduced.neutral.push(post);
+      }
+      return reduced;
+    }, posts);
+
+    this.setState({ posts });
   };
 
   render () {
@@ -48,19 +63,32 @@ class App extends Component {
       <div className="App">
         <NavBar/>
         <Grid
-            container
-            spacing={3}
-            direction="row"
-            justify="flex-end"
-            alignItems="center"
+          container
+          spacing={2}
+          direction="row"
+          justify="center"
+          alignItems="center"
+          style={{paddingLeft: '1rem', paddingRight: '1rem'}}
         >
-          <Grid item xs/>
-          <Grid item xs>
+          <Grid item xs={12} md={3}>
             {this.state.keywords && <KeywordTable keywords={this.state.keywords} />}
-            {this.state.posts && <SentimentPieChart posts={this.state.posts}/>}
           </Grid>
-          <Grid item xs className="MuiGrid-align-items-xs-flex-end">
-            {this.state.posts && <Timeline posts={this.state.posts}/>}
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">
+                  {`Sentiment Ratios`}
+                </Typography>
+                {this.state.posts && <SentimentPieChart posts={this.state.posts}/>}
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <CardContent>
+                {this.state.posts && <SentimentPostList posts={this.state.posts}/>}
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
       </div>
