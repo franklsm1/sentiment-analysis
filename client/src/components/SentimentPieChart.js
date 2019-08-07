@@ -9,11 +9,11 @@ const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) =>
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-  return (
+  return percent > 0 ? (
     <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
       {`${(percent * 100).toFixed(0)}%`}
     </text>
-  );
+  ) : '';
 };
 
 const SentimentPieChart = ({ posts }) => {

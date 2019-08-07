@@ -11,10 +11,11 @@ export const getKeywords = async (setKeywords) => {
   setKeywords(body);
 };
 
-export const getPostsFromLastTwoDays = async (setPosts) => {
-  const today = new Date();
-  const todaysDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-  const response = await fetch(`${host}/api/v1/posts?startDate=${todaysDate}`);
+const getFormattedDateTime = (date) =>
+  date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+
+export const getPostsFromLastTwoDays = async (startDate, endDate, setPosts) => {
+  const response = await fetch(`${host}/api/v1/posts?startDate=${getFormattedDateTime(startDate)}&endDate=${getFormattedDateTime(endDate)}`);
   const body = await response.json();
 
   if (response.status !== 200) {
