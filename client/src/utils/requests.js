@@ -14,8 +14,9 @@ export const getKeywords = async (setKeywords) => {
 const getFormattedDateTime = (date) =>
   date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 
-export const getPostsFromLastTwoDays = async (startDate, endDate, setPosts) => {
-  const response = await fetch(`${host}/api/v1/posts?startDate=${getFormattedDateTime(startDate)}&endDate=${getFormattedDateTime(endDate)}`);
+export const getPostsFromLastTwoDays = async (timeframeNumber, timeframeUnits, setPosts) => {
+  const startDate = new Date(new Date().valueOf() - 1000 * 60 * (timeframeUnits === 'h' ? 60 : 60 * 24) * timeframeNumber);
+  const response = await fetch(`${host}/api/v1/posts?startDate=${getFormattedDateTime(startDate)}`);
   const body = await response.json();
 
   if (response.status !== 200) {

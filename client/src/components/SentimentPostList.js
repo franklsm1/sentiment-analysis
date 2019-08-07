@@ -46,7 +46,7 @@ export default function SentimentPostList(props) {
       className={classes.root}
     >
       <Divider />
-      <ListItem butto onClick={handlePositiveClick}>
+      <ListItem button onClick={handlePositiveClick}>
         <ListItemIcon>
           <ThumbUpIcon />
         </ListItemIcon>

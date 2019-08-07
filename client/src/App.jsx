@@ -1,4 +1,3 @@
-import { DateTimePicker } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -11,56 +10,58 @@ import SentimentPieChart from './components/SentimentPieChart';
 import SentimentPostList from './components/SentimentPostList';
 import './App.css';
 import { getKeywords, getPostsFromLastTwoDays } from './utils/requests';
+import Radio from '@material-ui/core/Radio';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
 
 const App = () => {
-  const [startDate, setStartDate] = useState(new Date(new Date().getTime() - 1000 * 60 * 60 * 24));
-  const [endDate, setEndDate] = useState(new Date());
+  const [timeframeNumber, setTimeframeNumber] = useState(1);
+  const [timeframeUnits, setTimeframeUnits] = React.useState('d');
   const [posts, setPosts] = useState(undefined);
   const [keywords, setKeywords] = useState(undefined);
 
   useEffect(() => {
     getKeywords(setKeywords);
-    getPostsFromLastTwoDays(startDate, endDate, setPosts);
-  }, [startDate, endDate]);
+    getPostsFromLastTwoDays(timeframeNumber, timeframeUnits, setPosts);
+  }, [timeframeNumber, timeframeUnits]);
+
+  const handleNumberChange = (event) => setTimeframeNumber(event.target.value);
+  const handleUnitChange = (event) => setTimeframeUnits(event.target.value);
 
   return (
     <div className="App">
       <NavBar/>
-      <Grid
-        container
-        spacing={3}
+      <Grid container xs
         justify="center"
         alignItems="center"
-        style={{ padding: '1rem' }}
-      >
-        <Grid item s={6}>
-          <Card style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
-            <DateTimePicker
-              margin="normal"
-              id="mui-pickers-date"
-              label="Start Date"
-              value={startDate}
-              onChange={setStartDate}
-              KeyboardButtonProps={{
-                'aria-label': 'change start date'
-              }}
-            />
-          </Card>
-        </Grid>
-        <Grid item s={6}>
-          <Card style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
-            <DateTimePicker
-              margin="normal"
-              id="mui-pickers-date"
-              label="End Date"
-              value={endDate}
-              onChange={setEndDate}
-              KeyboardButtonProps={{
-                'aria-label': 'change end date'
-              }}
-            />
-          </Card>
-        </Grid>
+        style={{ padding: '1rem' }}>
+        <Card>
+          <CardContent style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <NativeSelect
+              value={timeframeNumber}
+              onChange={handleNumberChange}
+            >
+              {Array.from(new Array(30), (x, i) => i + 1).map(number =>
+                <option key={number} value={number}>{number}</option>
+              )}
+            </NativeSelect>
+            <RadioGroup aria-label="position" name="position" value={timeframeUnits} onChange={handleUnitChange} row>
+              <FormControlLabel
+                value="d"
+                control={<Radio color="primary" />}
+                label="Day(s)"
+                labelPlacement="top"
+              />
+              <FormControlLabel
+                value="h"
+                control={<Radio color="primary" />}
+                label="Hour(s)"
+                labelPlacement="top"
+              />
+            </RadioGroup>
+          </CardContent>
+        </Card>
       </Grid>
       <Grid
         container

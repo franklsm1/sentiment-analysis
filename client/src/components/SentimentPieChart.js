@@ -32,6 +32,7 @@ const SentimentPieChart = ({ posts }) => {
           fill="#8884d8"
           legendType='circle'
           labelLine={false}
+          dataKey={'value'}
         >
           {
             data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
