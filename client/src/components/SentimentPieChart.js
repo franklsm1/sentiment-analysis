@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 const COLORS = ['red', 'orange', 'green'];
@@ -16,14 +16,14 @@ const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) =>
   );
 };
 
-const SentimentPieChart = ({posts}) => {
+const SentimentPieChart = ({ posts }) => {
   const data = [
     { name: 'Negative', value: posts.negative.length },
     { name: 'Neutral', value: posts.neutral.length },
-    { name: 'Positive', value: posts.neutral.length },
+    { name: 'Positive', value: posts.positive.length }
   ];
   return (
-    <ResponsiveContainer aspect={4.0/3.0} width='100%'>
+    <ResponsiveContainer aspect={4.0 / 3.0} width='100%'>
       <PieChart >
         <Legend verticalAlign="bottom" height={36}/>
         <Pie
