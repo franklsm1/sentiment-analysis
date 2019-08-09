@@ -15,7 +15,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
-const App = () => {
+const App: React.FC = () => {
   const [timeframeNumber, setTimeframeNumber] = useState(1);
   const [timeframeUnits, setTimeframeUnits] = React.useState('d');
   const [posts, setPosts] = useState(undefined);
@@ -26,13 +26,13 @@ const App = () => {
     getPostsFromLastTwoDays(timeframeNumber, timeframeUnits, setPosts);
   }, [timeframeNumber, timeframeUnits]);
 
-  const handleNumberChange = (event) => setTimeframeNumber(event.target.value);
-  const handleUnitChange = (event) => setTimeframeUnits(event.target.value);
+  const handleNumberChange = (event: React.ChangeEvent<HTMLSelectElement>) => setTimeframeNumber(Number(event.target.value));
+  const handleUnitChange = (event: React.ChangeEvent<{}>, value: string) => setTimeframeUnits(value);
 
   return (
     <div className="App">
       <NavBar/>
-      <Grid container xs
+      <Grid container
         justify="center"
         alignItems="center"
         style={{ padding: '1rem' }}>
