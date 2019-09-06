@@ -9,7 +9,7 @@ import NavBar from './components/NavBar';
 import SentimentPieChart from './components/SentimentPieChart';
 import SentimentPostList from './components/SentimentPostList';
 import './App.css';
-import { getKeywords, getPostsFromLastTwoDays } from './utils/requests';
+import { getKeywords, getPosts } from './utils/requests';
 import Radio from '@material-ui/core/Radio';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -23,7 +23,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     getKeywords(setKeywords);
-    getPostsFromLastTwoDays(timeframeNumber, timeframeUnits, setPosts);
+    getPosts(timeframeNumber, timeframeUnits, setPosts);
   }, [timeframeNumber, timeframeUnits]);
 
   const handleNumberChange = (event: React.ChangeEvent<HTMLSelectElement>) => setTimeframeNumber(Number(event.target.value));

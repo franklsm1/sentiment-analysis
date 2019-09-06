@@ -13,6 +13,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Timeline from "./Timeline";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import {Posts} from "../models/Posts";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SentimentPostList(props) {
+export default function SentimentPostList({ posts = {negative: [], neutral: [], positive: []} }: {posts?: Posts}) {
   const classes = useStyles();
   const [openNegative, setOpenNegative] = React.useState(false);
   const [openPositive, setOpenPositive] = React.useState(false);
@@ -54,7 +55,7 @@ export default function SentimentPostList(props) {
         {openPositive ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={openPositive} timeout="auto" unmountOnExit>
-        <Timeline tweets={props.posts.positive}/>
+        <Timeline tweets={posts.positive}/>
       </Collapse>
       <Divider component="li" />
       <ListItem button onClick={handleNeutralClick}>
@@ -65,7 +66,7 @@ export default function SentimentPostList(props) {
         {openNeutral ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={openNeutral} timeout="auto" unmountOnExit>
-        <Timeline tweets={props.posts.neutral}/>
+        <Timeline tweets={posts.neutral}/>
       </Collapse>
       <Divider component="li" />
       <ListItem button onClick={handleNegativeClick}>
@@ -76,7 +77,7 @@ export default function SentimentPostList(props) {
         {openNegative ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={openNegative} timeout="auto" unmountOnExit>
-        <Timeline tweets={props.posts.negative}/>
+        <Timeline tweets={posts.negative}/>
       </Collapse>
     </List>
   );
