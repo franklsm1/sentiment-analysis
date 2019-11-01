@@ -12,7 +12,7 @@
     "@types/react-dom": "16.8.5",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.1.1",
+    "react-scripts": "~3.1.2",
     "react-twitter-embed": "^2.0.8",
     "recharts": "^1.6.2",
     "typescript": "3.5.3"
@@ -22,25 +22,30 @@
     "build": "yarn lint && react-scripts build",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "test": "CI=true react-scripts test --env=jsdom",
+    "test": "yarn lint && CI=true react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:5000/",
   "devDependencies": {
-    "@types/recharts": "^1.1.20"
+    "@testing-library/react": "^9.3.1",
+    "@types/recharts": "^1.1.20",
+    "eslint-config-semistandard": "^15.0.0",
+    "jest-fetch-mock": "^2.1.2"
   },
   "jest": {
-    "coverageThreshold": {
-      "global": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      }
-    }
+    "collectCoverageFrom": [
+      "src/**/*.(js|jsx|ts|tsx)",
+      "!./src/react-app-env.d.ts",
+      "!./src/serviceWorker.ts",
+      "!./src/models/**",
+      "!./src/index.tsx"
+    ]
   },
   "eslintConfig": {
-    "extends": "react-app",
+    "extends": [
+      "react-app",
+      "semistandard"
+    ],
     "rules": {
       "indent": [
         2,

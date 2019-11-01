@@ -1,12 +1,12 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
-import {Posts} from "../models/Posts";
+import { Posts } from '../models/Posts';
 
 const COLORS = ['red', 'orange', 'green'];
 
 const RADIAN = Math.PI / 180;
 // @ts-ignore
-const renderLabel: React.ReactElement<any> = ({cx, cy, midAngle, innerRadius, outerRadius, percent}) => {
+const renderLabel: React.ReactElement<any> = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -18,7 +18,7 @@ const renderLabel: React.ReactElement<any> = ({cx, cy, midAngle, innerRadius, ou
   ) : '';
 };
 
-const SentimentPieChart = ({ posts = {negative: [], neutral: [], positive: []} }: {posts?: Posts}) => {
+const SentimentPieChart = ({ posts = { negative: [], neutral: [], positive: [] } }: {posts?: Posts}) => {
   const data = [
     { name: 'Negative', value: posts.negative.length },
     { name: 'Neutral', value: posts.neutral.length },

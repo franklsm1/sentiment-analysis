@@ -1,5 +1,5 @@
-import React  from 'react'
-import { TwitterTweetEmbed } from "react-twitter-embed";
+import React from 'react';
+import { TwitterTweetEmbed } from 'react-twitter-embed';
 
 const Timeline = (props) => (
   <div id='timeline'>

@@ -76,6 +76,7 @@
     "collectCoverageFrom": [
       "<rootDir>/src/**/*.js",
       "!<rootDir>/src/migrations/**",
+      "!<rootDir>/src/models/**",
       "!<rootDir>/src/server.js"
     ],
     "setupFilesAfterEnv": [

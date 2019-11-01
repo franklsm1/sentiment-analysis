@@ -10,22 +10,22 @@ import ThumbsUpDownIcon from '@material-ui/icons/ThumbsUpDown';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import Timeline from "./Timeline";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import {Posts} from "../models/Posts";
+import Timeline from './Timeline';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import { Posts } from '../models/Posts';
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   nested: {
-    paddingLeft: theme.spacing(4),
-  },
+    paddingLeft: theme.spacing(4)
+  }
 }));
 
-export default function SentimentPostList({ posts = {negative: [], neutral: [], positive: []} }: {posts?: Posts}) {
+export default function SentimentPostList ({ posts = { negative: [], neutral: [], positive: [] } }: {posts?: Posts}) {
   const classes = useStyles();
   const [openNegative, setOpenNegative] = React.useState(false);
   const [openPositive, setOpenPositive] = React.useState(false);

@@ -9,21 +9,20 @@ import Paper from '@material-ui/core/Paper';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 
-
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
-  },
+    marginTop: theme.spacing(3)
+  }
 }));
 
-function createData(id, keyword, status) {
-  return {id, keyword, status};
+function createData (id, keyword, status) {
+  return { id, keyword, status };
 }
 
-export default function KeywordTable(props) {
+export default function KeywordsTable (props) {
   const classes = useStyles();
-  const rows = props.keywords.map(({id, value, status}) => createData(id, value, status));
+  const rows = props.keywords.map(({ id, value, status }) => createData(id, value, status));
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
@@ -42,8 +41,8 @@ export default function KeywordTable(props) {
               <TableCell align="right">
                 {
                   row.status === 'active'
-                    ? <CheckIcon style={{fill: 'green'}}/>
-                    : <ClearIcon style={{fill: 'red'}}/>}
+                    ? <CheckIcon style={{ fill: 'green' }}/>
+                    : <ClearIcon style={{ fill: 'red' }}/>}
               </TableCell>
             </TableRow>
           ))}
