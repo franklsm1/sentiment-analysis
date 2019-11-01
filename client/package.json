@@ -19,10 +19,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "yarn lint && react-scripts build",
+    "build": "react-scripts build",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "test": "yarn lint && CI=true react-scripts test --env=jsdom --coverage",
+    "test": "CI=true react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:5000/",
