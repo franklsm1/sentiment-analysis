@@ -4,7 +4,7 @@ import Card from '@material-ui/core/Card';
 import { CardContent } from '@material-ui/core';
 
 import Typography from '@material-ui/core/Typography';
-import KeywordTable from './components/KeywordsTable';
+import KeywordsTable from './components/KeywordsTable';
 import NavBar from './components/NavBar';
 import SentimentPieChart from './components/SentimentPieChart';
 import SentimentPostList from './components/SentimentPostList';
@@ -72,7 +72,7 @@ const App: React.FC = () => {
         style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
       >
         <Grid item xs={12} md={6} lg={3}>
-          {keywords && <KeywordTable keywords={keywords} />}
+          {keywords && <KeywordsTable keywords={keywords} />}
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
           <Card>
