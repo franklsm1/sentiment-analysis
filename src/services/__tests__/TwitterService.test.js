@@ -2,8 +2,6 @@ import TwitterService, { baseTwitterSearchUrl } from '../TwitterService';
 import DatabaseService from '../DatabaseService';
 const fetchMock = require('node-fetch');
 
-jest.mock('../DatabaseService');
-
 describe('Service gets latest tweets on startup', () => {
   afterEach(() => {
     fetchMock.reset();
@@ -36,13 +34,9 @@ describe('Service gets latest tweets on startup', () => {
     mockSavePost = jest.fn().mockImplementation(() =>
       Promise.resolve('Success'));
 
-    DatabaseService.mockImplementation(() => {
-      return {
-        getKeywordsByStatus: mockGetKeywordsByStatus,
-        savePost: mockSavePost,
-        getLatestPostIdByKeywordId: mockGetLatestPostIdByKeywordId
-      };
-    });
+    DatabaseService.getKeywordsByStatus = mockGetKeywordsByStatus;
+    DatabaseService.savePost = mockSavePost;
+    DatabaseService.getLatestPostIdByKeywordId = mockGetLatestPostIdByKeywordId;
   });
 
   describe('full E2E flow', () => {

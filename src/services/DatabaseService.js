@@ -3,7 +3,7 @@ import knex from 'knex';
 import config from '../knexfile';
 import * as SentimentService from './SentimentService';
 
-export default class DatabaseService {
+export class DatabaseService {
   constructor () {
     this.db = knex(config[process.env.NODE_ENV || 'development']);
   }
@@ -65,3 +65,5 @@ export default class DatabaseService {
     }
   }
 }
+
+export default new DatabaseService();

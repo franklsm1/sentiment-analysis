@@ -1,24 +1,16 @@
 import {} from 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import path from 'path';
 import cron from 'node-cron';
+import path from 'path';
 
-import posts from './controllers/posts';
-import keywords from './controllers/keywords';
+import app from './app';
 import TwitterService from './services/TwitterService';
+import express from 'express';
 
-const app = express();
-const port = process.env.PORT || 5000;
-const baseApiEndpoint = '/api/v1';
 const twitterService = new TwitterService();
 
 // Check for new tweets every minute
 cron.schedule('* * * * *', () => twitterService.getNewTweets());
-
-app.use(cors({ origin: 'http://localhost:3000' }));
-app.use(baseApiEndpoint + '/posts', posts);
-app.use(baseApiEndpoint + '/keywords', keywords);
+const port = process.env.PORT || 5000;
 
 app.use(express.static(path.join(__dirname, 'client')));
 app.get('/', function (req, res) {

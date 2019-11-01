@@ -5,10 +5,6 @@ const fetch = require('node-fetch');
 export const baseTwitterSearchUrl = 'https://api.twitter.com/1.1/search/tweets.json';
 
 export default class TwitterService {
-  constructor () {
-    this.databaseService = new DatabaseService();
-  }
-
   get fetchOptions () {
     return {
       method: 'GET',
@@ -21,7 +17,7 @@ export default class TwitterService {
   }
 
   getNewTweets = async () => {
-    const keywordList = await this.databaseService.getKeywordsByStatus('active');
+    const keywordList = await DatabaseService.getKeywordsByStatus('active');
     await Promise.all(keywordList.map(async (keyword) => {
       const tweets = await this.getLatestTweetsByKeyword(keyword);
       tweets.forEach((tweet) => this.saveTweet(keyword, tweet));
@@ -36,11 +32,11 @@ export default class TwitterService {
       keyword_id: keyword.id
     };
     console.log(`sentiment: ${postObject.sentiment} tweet: ${tweet.full_text}`);
-    this.databaseService.savePost(postObject, tweet.full_text);
+    DatabaseService.savePost(postObject, tweet.full_text);
   };
 
   getLatestTweetsByKeyword = async (keyword) => {
-    const latestPostId = await this.databaseService.getLatestPostIdByKeywordId(keyword.id);
+    const latestPostId = await DatabaseService.getLatestPostIdByKeywordId(keyword.id);
     const queryParam = `${keyword.value} -filter:retweets -filter:quote -filter:replies`;
     const sinceIdParam = latestPostId ? `&since_id=${latestPostId}` : '';
     const searchURL = `${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en&tweet_mode=extended${sinceIdParam}`;

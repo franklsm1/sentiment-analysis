@@ -2,12 +2,11 @@ import * as express from 'express';
 import DatabaseService from '../services/DatabaseService';
 
 const router = express.Router();
-const databaseService = new DatabaseService();
 
 router.get('/', async (req, res) => {
   const keywords = req.query.status
-    ? await databaseService.getKeywordsByStatus(req.query.status)
-    : await databaseService.getAllKeywords();
+    ? await DatabaseService.getKeywordsByStatus(req.query.status)
+    : await DatabaseService.getAllKeywords();
   res.send(keywords);
 });
 

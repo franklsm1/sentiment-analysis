@@ -2,7 +2,6 @@ import express from 'express';
 import DatabaseService from '../services/DatabaseService';
 
 const router = express.Router();
-const databaseService = new DatabaseService();
 
 router.get('/', async (req, res) => {
   if (!req.query.startDate) {
@@ -10,7 +9,7 @@ router.get('/', async (req, res) => {
   }
   const startDate = req.query.startDate;
   const endDate = req.query.endDate || new Date();
-  const posts = await databaseService.getPostsByDateRange(startDate, endDate);
+  const posts = await DatabaseService.getPostsByDateRange(startDate, endDate);
   res.send(posts);
 });
 

@@ -1,4 +1,4 @@
-import DatabaseService from '../DatabaseService';
+import { DatabaseService } from '../DatabaseService';
 import * as SentimentService from '../SentimentService';
 
 describe('DB config', () => {
