@@ -5,3 +5,4 @@ export interface Posts {
     positive: [Post?],
     neutral: [Post?],
 }
+

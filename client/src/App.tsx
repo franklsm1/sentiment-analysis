@@ -14,16 +14,43 @@ import Radio from '@material-ui/core/Radio';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import { Posts } from '../../client/src/models/Posts';
+
+interface IKeyword {
+  id: number,
+  value: string
+}
+
+interface IKeywords extends Array<IKeyword>{}
 
 const App: React.FC = () => {
-  const [timeframeNumber, setTimeframeNumber] = useState(1);
+  const [timeframeNumber, setTimeframeNumber] = React.useState(1);
   const [timeframeUnits, setTimeframeUnits] = React.useState('d');
-  const [posts, setPosts] = useState(undefined);
-  const [keywords, setKeywords] = useState(undefined);
+  const [posts, setPosts] = React.useState<Posts>({ negative: [], positive: [], neutral: []});
+  const [selectedPosts, setSelectedPosts] = React.useState<Posts>({ negative: [], positive: [], neutral: []});
+  const [keywords, setKeywords] = React.useState<IKeywords>([]);
+
+  const filterPosts = (selectedId: number, postsParam:Posts = posts) => {
+    const filteredNegativePosts = postsParam.negative.filter(post => post && selectedId === post.keyword_id);
+    const filteredPositivePosts = postsParam.positive.filter(post => post && selectedId === post.keyword_id);
+    const filteredNeutralPosts = postsParam.neutral.filter(post => post && selectedId === post.keyword_id);
+    // @ts-ignore
+    setSelectedPosts({
+      "negative": filteredNegativePosts,
+      "positive": filteredPositivePosts,
+      "neutral": filteredNeutralPosts
+    });
+  };
 
   useEffect(() => {
     getKeywords(setKeywords);
-    getPosts(timeframeNumber, timeframeUnits, setPosts);
+    const loadPosts = async () => {
+      // @ts-ignore
+      const postResponse : Posts = await getPosts(timeframeNumber, timeframeUnits);
+      await setPosts(postResponse);
+      filterPosts(1, postResponse);
+    };
+    loadPosts();
   }, [timeframeNumber, timeframeUnits]);
 
   const handleNumberChange = (event: React.ChangeEvent<HTMLSelectElement>) => setTimeframeNumber(Number(event.target.value));
@@ -72,7 +99,7 @@ const App: React.FC = () => {
         style={{ paddingLeft: '1rem', paddingRight: '1rem' }}
       >
         <Grid item xs={12} md={6} lg={3}>
-          {keywords && <KeywordsTable keywords={keywords} />}
+          {keywords && <KeywordsTable keywords={keywords} filterPosts={filterPosts} />}
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
           <Card>
@@ -80,14 +107,14 @@ const App: React.FC = () => {
               <Typography variant="h6">
                 {`Sentiment Ratios`}
               </Typography>
-              {posts && <SentimentPieChart posts={posts}/>}
+              {posts && <SentimentPieChart posts={selectedPosts}/>}
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
           <Card>
             <CardContent>
-              {posts && <SentimentPostList posts={posts}/>}
+              {posts && <SentimentPostList posts={selectedPosts}/>}
             </CardContent>
           </Card>
         </Grid>

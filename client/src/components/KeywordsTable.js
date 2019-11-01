@@ -18,11 +18,15 @@ function createData (id, keyword, status) {
   return { id, keyword, status };
 }
 
-export default function KeywordsTable (props) {
-  const [selected, setSelected] = useState([1]);
+export default function KeywordsTable ({ keywords, filterPosts }) {
+  const [selected, setSelected] = useState(1);
   const classes = useStyles();
-  const rows = props.keywords.map(({ id, value, status }) => createData(id, value, status));
-  const isSelected = id => selected.indexOf(id) !== -1;
+  const rows = keywords.map(({ id, value, status }) => createData(id, value, status));
+  const isSelected = id => selected === id;
+  const selectHandler = (row) => {
+    setSelected(row);
+    filterPosts(row);
+  };
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
@@ -34,7 +38,7 @@ export default function KeywordsTable (props) {
         <TableBody>
           {rows.map(row => {
             return (
-              <TableRow onClick={event => setSelected([row.id])}
+              <TableRow onClick={() => selectHandler(row.id)}
                 role={row.id}
                 hover
                 aria-checked={isSelected(row.id)}

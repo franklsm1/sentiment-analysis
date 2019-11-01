@@ -1,3 +1,4 @@
 export interface Post {
-    id: string
+    id: string,
+    keyword_id: number
 }
