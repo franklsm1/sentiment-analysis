@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -6,8 +6,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,32 +18,39 @@ function createData (id, keyword, status) {
   return { id, keyword, status };
 }
 
-export default function KeywordsTable (props) {
+export default function KeywordsTable ({ keywords, filterPosts }) {
+  const [selected, setSelected] = useState(1);
   const classes = useStyles();
-  const rows = props.keywords.map(({ id, value, status }) => createData(id, value, status));
+  const rows = keywords.map(({ id, value, status }) => createData(id, value, status));
+  const isSelected = id => selected === id;
+  const selectHandler = (row) => {
+    setSelected(row);
+    filterPosts(row);
+  };
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
             <TableCell>Keyword</TableCell>
-            <TableCell align="right">Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.id}>
-              <TableCell component="th" scope="row">
-                {row.keyword}
-              </TableCell>
-              <TableCell align="right">
-                {
-                  row.status === 'active'
-                    ? <CheckIcon style={{ fill: 'green' }}/>
-                    : <ClearIcon style={{ fill: 'red' }}/>}
-              </TableCell>
-            </TableRow>
-          ))}
+          {rows.map(row => {
+            return (
+              <TableRow onClick={() => selectHandler(row.id)}
+                role={row.id}
+                hover
+                aria-checked={isSelected(row.id)}
+                aria-label={row.keyword}
+                selected={isSelected(row.id)}
+                key={row.id}>
+                <TableCell component="th" scope="row">
+                  {row.keyword}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Paper>
