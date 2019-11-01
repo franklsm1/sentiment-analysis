@@ -1,3 +1,5 @@
 export interface Post {
-    id: string
+    id: string,
+    sentiment   : string,
+    created_date: Date
 }
