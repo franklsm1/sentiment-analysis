@@ -138,7 +138,7 @@ const App: React.FC = () => {
               <Typography variant="h6">
                 {`Sentiment Ratios`}
               </Typography>
-              {posts && <SentimentScatterChart posts={posts} />}
+              {posts && <SentimentScatterChart posts={selectedPosts} />}
             </CardContent>
           </Card>
         </Grid>
