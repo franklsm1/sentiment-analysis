@@ -1,6 +1,7 @@
 # React, Express, and MySQL App to track sentiment Analysis
 
 ### Setup MySQL locally
+1) install brew (if not installed): `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 1) install MySQL (on a mac) with: `brew install mysql`
 1) start MySQL with: `mysql.server start`
 1) access MySQL with: `mysql -u root`
@@ -8,8 +9,14 @@
 1) exit mysql CLI: `exit`
 
 ### Setup required to start app (after mysql is started)
+1) install yarn (if not installed): `brew install yarn`
+1) install project: `yarn install`
+1) install project in client dir: `cd client && yarn install`
 1) Run migrations to create table and add test data to the DB: `yarn knex:migrate` and `NODE_ENV=test yarn knex:migrate`
-1) Create a `.env` file and add a valid twitter bearer token for the `TWITTER_BEARER_TOKEN` env property
+    - If fail due to "Client does not support authentication protocol requested by server; consider upgrading MySQL client", then run following in mysql: 
+    - `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';`
+    - `flush privileges;`
+1) In both `.env` files (main and client directories), add a valid twitter bearer token for the `TWITTER_BEARER_TOKEN` 
 
 **Note**: If a proxy is required, ensure the `YARN_PROXY` env variable is set
 
