@@ -25,11 +25,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function SentimentPostList ({ posts = { negative: [], neutral: [], positive: [] } }: {posts?: Posts}) {
+export default function SentimentPostList (
+    {posts = { negative: [], neutral: [], positive: [] },
+      negativePiePostClicked, neutralPiePostClicked, positivePiePostClicked,
+      setNegativePiePostClicked, setNeutralPiePostClicked, setPositivePiePostClicked }:
+  {posts?: Posts, negativePiePostClicked?: boolean, neutralPiePostClicked?: boolean, positivePiePostClicked?: boolean,
+    setNegativePiePostClicked?: any, setNeutralPiePostClicked?: any, setPositivePiePostClicked?: any,}) {
   const classes = useStyles();
   const [openNegative, setOpenNegative] = React.useState(false);
   const [openPositive, setOpenPositive] = React.useState(false);
   const [openNeutral, setOpenNeutral] = React.useState(false);
+
+  if (negativePiePostClicked && !openNegative) {
+    setOpenNegative(true)
+  }
+  if (positivePiePostClicked && !openPositive) {
+    setOpenPositive(true)
+  }
+  if (neutralPiePostClicked && !openNeutral) {
+    setOpenNeutral(true)
+  }
+
+  //reset the trigger state
+  setNegativePiePostClicked(false)
+  setNeutralPiePostClicked(false)
+  setPositivePiePostClicked(false)
 
   const handleNegativeClick = () => setOpenNegative(!openNegative);
   const handlePositiveClick = () => setOpenPositive(!openPositive);

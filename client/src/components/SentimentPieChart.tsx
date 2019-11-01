@@ -18,7 +18,12 @@ const renderLabel: React.ReactElement<any> = ({ cx, cy, midAngle, innerRadius, o
   ) : '';
 };
 
-const SentimentPieChart = ({ posts = { negative: [], neutral: [], positive: [] } }: {posts?: Posts}) => {
+const SentimentPieChart = (
+    {
+      posts = { negative: [], neutral: [], positive: [] },
+      setNegativePiePostClicked, setNeutralPiePostClicked, setPositivePiePostClicked
+    }:
+        {posts?: Posts, setNegativePiePostClicked?: any, setNeutralPiePostClicked?: any, setPositivePiePostClicked?: any}) => {
   const data = [
     { name: 'Negative', value: posts.negative.length },
     { name: 'Neutral', value: posts.neutral.length },
@@ -37,7 +42,21 @@ const SentimentPieChart = ({ posts = { negative: [], neutral: [], positive: [] }
           dataKey={'value'}
         >
           {
-            data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+            data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}
+                                             onClick={(e)=>{
+
+                                               switch (entry.name) {
+                                                 case 'Negative':
+                                                   setNegativePiePostClicked(true)
+                                                   break;
+                                                 case 'Positive':
+                                                   setPositivePiePostClicked(true)
+                                                   break;
+                                                 case 'Neutral':
+                                                   setNeutralPiePostClicked(true)
+                                                   break;
+                                               }
+                                             }} />)
           }
         </Pie>
       </PieChart>
