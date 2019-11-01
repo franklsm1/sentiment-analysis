@@ -19,6 +19,7 @@
 1) In both `.env` files (main and client directories), add a valid twitter bearer token for the `TWITTER_BEARER_TOKEN` 
 
 **Note**: If a proxy is required, ensure the `YARN_PROXY` env variable is set
+**Note2**: If you keep getting self signed cert in chain run the followinng command `export NODE_TLS_REJECT_UNAUTHORIZED="0"`
 
 ### Commands:
 **Note**: May need to give the `build:prod` script permissions to execute (`chmod +x ./build.sh`)
