@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import KeywordsTable from './components/KeywordsTable';
 import NavBar from './components/NavBar';
 import SentimentPieChart from './components/SentimentPieChart';
+import SentimentScatterChart from './components/SentimentScatterChart';
 import SentimentPostList from './components/SentimentPostList';
 import './App.css';
 import { getKeywords, getPosts } from './utils/requests';
@@ -41,6 +42,9 @@ const App: React.FC = () => {
       "neutral": filteredNeutralPosts
     });
   };
+  const [positivePiePostClicked, setPositivePiePostClicked] = useState(false);
+  const [neutralPiePostClicked, setNeutralPiePostClicked] = useState(false);
+  const [negativePiePostClicked, setNegativePiePostClicked] = useState(false);
 
   useEffect(() => {
     getKeywords(setKeywords);
@@ -107,14 +111,34 @@ const App: React.FC = () => {
               <Typography variant="h6">
                 {`Sentiment Ratios`}
               </Typography>
-              {posts && <SentimentPieChart posts={selectedPosts}/>}
+              {posts && <SentimentPieChart posts={selectedPosts}
+                                           setNegativePiePostClicked={setNegativePiePostClicked}
+                                           setNeutralPiePostClicked={setNeutralPiePostClicked}
+                                           setPositivePiePostClicked={setPositivePiePostClicked}/>}
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
           <Card>
             <CardContent>
-              {posts && <SentimentPostList posts={selectedPosts}/>}
+              {posts && <SentimentPostList posts={selectedPosts}
+                                           negativePiePostClicked={negativePiePostClicked}
+                                           neutralPiePostClicked={neutralPiePostClicked}
+                                           positivePiePostClicked={positivePiePostClicked}
+                                           setNegativePiePostClicked={setNegativePiePostClicked}
+                                           setNeutralPiePostClicked={setNeutralPiePostClicked}
+                                           setPositivePiePostClicked={setPositivePiePostClicked}
+              />}
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">
+                {`Sentiment Ratios`}
+              </Typography>
+              {posts && <SentimentScatterChart posts={posts} />}
             </CardContent>
           </Card>
         </Grid>
