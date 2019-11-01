@@ -20,6 +20,9 @@ const App: React.FC = () => {
   const [timeframeUnits, setTimeframeUnits] = React.useState('d');
   const [posts, setPosts] = useState(undefined);
   const [keywords, setKeywords] = useState(undefined);
+  const [positivePiePostClicked, setPositivePiePostClicked] = useState(false);
+  const [neutralPiePostClicked, setNeutralPiePostClicked] = useState(false);
+  const [negativePiePostClicked, setNegativePiePostClicked] = useState(false);
 
   useEffect(() => {
     getKeywords(setKeywords);
@@ -80,14 +83,24 @@ const App: React.FC = () => {
               <Typography variant="h6">
                 {`Sentiment Ratios`}
               </Typography>
-              {posts && <SentimentPieChart posts={posts}/>}
+              {posts && <SentimentPieChart posts={posts}
+                                           setNegativePiePostClicked={setNegativePiePostClicked}
+                                           setNeutralPiePostClicked={setNeutralPiePostClicked}
+                                           setPositivePiePostClicked={setPositivePiePostClicked}/>}
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
           <Card>
             <CardContent>
-              {posts && <SentimentPostList posts={posts}/>}
+              {posts && <SentimentPostList posts={posts}
+                                           negativePiePostClicked={negativePiePostClicked}
+                                           neutralPiePostClicked={neutralPiePostClicked}
+                                           positivePiePostClicked={positivePiePostClicked}
+                                           setNegativePiePostClicked={setNegativePiePostClicked}
+                                           setNeutralPiePostClicked={setNeutralPiePostClicked}
+                                           setPositivePiePostClicked={setPositivePiePostClicked}
+              />}
             </CardContent>
           </Card>
         </Grid>
