@@ -14,14 +14,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function createData (id, keyword, status) {
-  return { id, keyword, status };
+function createData (id, keyword, status, createdDate) {
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDate = new Date(createdDate).toLocaleDateString('en-US', options);
+  return { id, keyword, status, createdDate: formattedDate };
 }
 
 export default function KeywordsTable ({ setSelectedId, keywords, filterPosts }) {
   const [selected, setSelected] = useState(1);
   const classes = useStyles();
-  const rows = keywords.map(({ id, value, status }) => createData(id, value, status));
+  const rows = keywords.map(({ id, value, status, created_date: createdDate }) => createData(id, value, status, createdDate));
   const isSelected = id => selected === id;
   const selectHandler = (row) => {
     console.log('row ->>>', row);
@@ -35,6 +37,7 @@ export default function KeywordsTable ({ setSelectedId, keywords, filterPosts })
         <TableHead>
           <TableRow>
             <TableCell>Keyword</TableCell>
+            <TableCell>Start Date</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -49,6 +52,9 @@ export default function KeywordsTable ({ setSelectedId, keywords, filterPosts })
                 key={row.id}>
                 <TableCell component="th" scope="row">
                   {row.keyword}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <span>{row.createdDate}</span>
                 </TableCell>
               </TableRow>
             );
