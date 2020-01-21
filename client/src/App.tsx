@@ -33,7 +33,6 @@ const App: React.FC = () => {
   const [selectedId, setSelectedId] = React.useState(1);
 
   const filterPosts = useCallback((selectedId: number, postsParam:Posts = posts) => {
-    console.log('id --> ', selectedId, ' posts --->', postsParam);
     const filteredNegativePosts = postsParam.negative.filter(post => post && selectedId === post.keyword_id);
     const filteredPositivePosts = postsParam.positive.filter(post => post && selectedId === post.keyword_id);
     const filteredNeutralPosts = postsParam.neutral.filter(post => post && selectedId === post.keyword_id);
