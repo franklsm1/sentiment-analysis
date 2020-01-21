@@ -101,6 +101,20 @@ describe('Service gets latest tweets on startup', () => {
       expect(mockGetLatestPostIdByKeywordId).toHaveBeenCalledWith(badKeyword.id);
       expect(tweets).toEqual(mockSearchResponse.statuses);
     });
+
+    it('should return empty array when no posts are found for the provided keyword', async () => {
+      const twitterService = new TwitterService();
+      fetchMock.mock(`glob:${baseTwitterSearchUrl}*${encodeURIComponent(defaultKeyword.value)}*tweet_mode=extended&since_id=${defaultPost.id}`, {
+        status: 200,
+        headers: twitterService.fetchOptions.headers,
+        body: {}
+      });
+      const tweets = await twitterService.getLatestTweetsByKeyword(defaultKeyword);
+
+      expect(mockGetLatestPostIdByKeywordId).toHaveBeenCalledTimes(1);
+      expect(mockGetLatestPostIdByKeywordId).toHaveBeenCalledWith(defaultKeyword.id);
+      expect(tweets).toEqual([]);
+    });
   });
 
   describe('Fetch Options', () => {

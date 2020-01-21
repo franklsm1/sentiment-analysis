@@ -56,10 +56,12 @@ export class DatabaseService {
         .where('keyword_id', '=', keywordId)
         .groupBy('keyword_id');
 
-      const latestPostIds = await this.db('post')
-        .select('id')
-        .where('created_date', '=', latestCreatedDates[0]['latestCreatedDate']);
-      return latestPostIds[0].id;
+      if (latestCreatedDates.length > 0) {
+        const latestPostIds = await this.db('post')
+          .select('id')
+          .where('created_date', '=', latestCreatedDates[0]['latestCreatedDate']);
+        return latestPostIds[0].id;
+      }
     } catch (error) {
       console.error(`error getting latest post id for keyword: ${keywordId} -->` + error.message);
     }

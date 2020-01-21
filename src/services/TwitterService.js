@@ -44,6 +44,6 @@ export default class TwitterService {
 
     const response = await fetch(searchURL, this.fetchOptions);
     const responseJson = await response.json();
-    return responseJson.statuses;
+    return responseJson.statuses || [];
   };
 }

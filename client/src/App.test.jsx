@@ -48,6 +48,7 @@ describe('App', () => {
   it('should render with keyword table, pie chart, and twitter post list', async () => {
     expect(container.getByText('Keyword')).toBeTruthy();
     expect(container.getByText('Sentiment Ratios')).toBeTruthy();
+    expect(container.getByText('Sentiment Scatter Chart')).toBeTruthy();
     expect(container.getByText('Analyzed Posts')).toBeTruthy();
   });
 });

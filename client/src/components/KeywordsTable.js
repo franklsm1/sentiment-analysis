@@ -18,13 +18,15 @@ function createData (id, keyword, status) {
   return { id, keyword, status };
 }
 
-export default function KeywordsTable ({ keywords, filterPosts }) {
+export default function KeywordsTable ({ setSelectedId, keywords, filterPosts }) {
   const [selected, setSelected] = useState(1);
   const classes = useStyles();
   const rows = keywords.map(({ id, value, status }) => createData(id, value, status));
   const isSelected = id => selected === id;
   const selectHandler = (row) => {
+    console.log('row ->>>', row);
     setSelected(row);
+    setSelectedId(row);
     filterPosts(row);
   };
   return (
