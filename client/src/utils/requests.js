@@ -11,12 +11,9 @@ export const getKeywords = async (setKeywords) => {
   setKeywords(body);
 };
 
-const getFormattedDateTime = (date) =>
-  date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-
 export const getPosts = async (timeframeNumber, timeframeUnits) => {
   const startDate = new Date(new Date().valueOf() - 1000 * 60 * (timeframeUnits === 'h' ? 60 : 60 * 24) * timeframeNumber);
-  const response = await fetch(`${host}/api/v1/posts?startDate=${getFormattedDateTime(startDate)}`);
+  const response = await fetch(`${host}/api/v1/posts?startDate=${startDate.toISOString()}`);
   const body = await response.json();
 
   if (response.status !== 200) {
