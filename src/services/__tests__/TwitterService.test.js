@@ -15,7 +15,10 @@ describe('Service gets latest tweets on startup', () => {
         id: 123,
         id_str: '123',
         full_text: 'test tweet #allstate',
-        created_at: '2019-07-09'
+        created_at: '2019-07-09',
+        entities: {
+          urls: []
+        }
       }
     ]
   };
@@ -42,7 +45,7 @@ describe('Service gets latest tweets on startup', () => {
   describe('full E2E flow', () => {
     it('new tweets are processed and sent to DB service to analyze sentiment and save', async () => {
       const twitterService = new TwitterService();
-      fetchMock.mock(`glob:${baseTwitterSearchUrl}*${encodeURIComponent(defaultKeyword.value)}*retweets*quote*&include_entities=0&lang=en&tweet_mode=extended*since_id=${defaultPost.id}`, {
+      fetchMock.mock(`glob:${baseTwitterSearchUrl}*${encodeURIComponent(defaultKeyword.value)}*retweets*quote*&lang=en&tweet_mode=extended*since_id=${defaultPost.id}`, {
         status: 200,
         headers: twitterService.fetchOptions.headers,
         body: mockSearchResponse
@@ -63,6 +66,32 @@ describe('Service gets latest tweets on startup', () => {
       expect(mockGetLatestPostIdByKeywordId).toHaveBeenCalledWith(defaultKeyword.id);
       expect(mockSavePost).toHaveBeenCalledTimes(1);
       expect(mockSavePost).toHaveBeenCalledWith(expectedPost, mockSearchResponse.statuses[0].full_text);
+    });
+
+    it('if processed tweets contain a url they are not saved to DB to prevent an overflow of advertisement tweets', async () => {
+      const twitterService = new TwitterService();
+      fetchMock.mock(`glob:${baseTwitterSearchUrl}*${encodeURIComponent(defaultKeyword.value)}*retweets*quote*&lang=en&tweet_mode=extended*since_id=${defaultPost.id}`, {
+        status: 200,
+        headers: twitterService.fetchOptions.headers,
+        body: {
+          statuses: [
+            {
+              ...mockSearchResponse.statuses[0],
+              entities: {
+                urls: [{ url: 'https://fakeAd.com' }]
+              }
+            }
+          ]
+        }
+      });
+
+      await twitterService.getNewTweets();
+
+      expect(mockGetKeywordsByStatus).toHaveBeenCalledTimes(1);
+      expect(mockGetKeywordsByStatus).toHaveBeenCalledWith('active');
+      expect(mockGetLatestPostIdByKeywordId).toHaveBeenCalledTimes(1);
+      expect(mockGetLatestPostIdByKeywordId).toHaveBeenCalledWith(defaultKeyword.id);
+      expect(mockSavePost).toHaveBeenCalledTimes(0);
     });
   });
 

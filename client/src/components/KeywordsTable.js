@@ -6,11 +6,15 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
+  },
+  selected: {
+    backgroundColor: 'yellow',
   }
 }));
 
@@ -33,7 +37,11 @@ export default function KeywordsTable ({ setSelectedId, keywords, filterPosts })
   };
   return (
     <Paper className={classes.root}>
-      <Table className={classes.table}>
+      <div>
+        <Typography  style={{paddingTop:'1rem'}} variant="h6">
+          <strong>Select a keyword below</strong>
+        </Typography>
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell>Keyword</TableCell>
@@ -48,7 +56,7 @@ export default function KeywordsTable ({ setSelectedId, keywords, filterPosts })
                 hover
                 aria-checked={isSelected(row.id)}
                 aria-label={row.keyword}
-                selected={isSelected(row.id)}
+                className={isSelected(row.id) && classes.selected}
                 key={row.id}>
                 <TableCell component="th" scope="row">
                   {row.keyword}
@@ -61,6 +69,7 @@ export default function KeywordsTable ({ setSelectedId, keywords, filterPosts })
           })}
         </TableBody>
       </Table>
+      </div>
     </Paper>
   );
 }

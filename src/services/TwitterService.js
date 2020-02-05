@@ -25,21 +25,23 @@ export default class TwitterService {
   };
 
   saveTweet = (keyword, tweet) => {
-    const postObject = {
-      id: tweet.id_str,
-      created_date: new Date(tweet.created_at),
-      type: 'TWITTER',
-      keyword_id: keyword.id
-    };
-    console.log(`sentiment: ${postObject.sentiment} tweet: ${tweet.full_text}`);
-    DatabaseService.savePost(postObject, tweet.full_text);
+    if (tweet.entities && tweet.entities.urls.length === 0) {
+      const postObject = {
+        id: tweet.id_str,
+        created_date: new Date(tweet.created_at),
+        type: 'TWITTER',
+        keyword_id: keyword.id
+      };
+      console.log(`sentiment: ${postObject.sentiment} tweet: ${tweet.full_text}`);
+      DatabaseService.savePost(postObject, tweet.full_text);
+    }
   };
 
   getLatestTweetsByKeyword = async (keyword) => {
     const latestPostId = await DatabaseService.getLatestPostIdByKeywordId(keyword.id);
     const queryParam = `${keyword.value} -filter:retweets -filter:quote -filter:replies`;
     const sinceIdParam = latestPostId ? `&since_id=${latestPostId}` : '';
-    const searchURL = `${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&include_entities=0&lang=en&tweet_mode=extended${sinceIdParam}`;
+    const searchURL = `${baseTwitterSearchUrl}?q=${encodeURIComponent(queryParam)}&lang=en&tweet_mode=extended${sinceIdParam}`;
     console.log('URL: ', searchURL);
 
     const response = await fetch(searchURL, this.fetchOptions);
