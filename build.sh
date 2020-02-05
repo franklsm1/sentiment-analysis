@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 cd client
+export SKIP_PREFLIGHT_CHECK=true
 yarn install
 yarn build
 
