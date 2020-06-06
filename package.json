@@ -6,9 +6,12 @@
   "scripts": {
     "build": "babel src -d dist --ignore src/**/*.test.js,src/migrations/**",
     "build:prod": "./build.sh",
+    "buildBoth": "yarn build && cd client && yarn build",
     "clean": "rm -rf dist && rm -rf coverage",
     "client": "cd client && yarn start",
     "client:test": "cd client && yarn test",
+    "installBoth": "yarn install && cd client && yarn install",
+    "installBoth:prod": "yarn install --prod && cd client && yarn install --prod",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "local": "concurrently --kill-others-on-fail \"yarn start\" \"yarn client\"",
@@ -24,6 +27,11 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.5.5",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@types/lodash": "^4.14.144",
     "cors": "^2.8.5",
     "date-fns": "^2.0.0-beta.4",
@@ -39,11 +47,6 @@
     "sentiment": "^5.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-transform-runtime": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
     "@types/supertest": "^2.0.8",
     "babel-eslint": "10.0.3",
     "concurrently": "^3.6.0",
