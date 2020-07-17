@@ -39,7 +39,7 @@
     "express": "^4.16.3",
     "https-proxy-agent": "^2.2.2",
     "knex": "^0.19.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mssql": "^5.1.0",
     "mysql": "^2.16.0",
     "node-cron": "^2.0.3",
