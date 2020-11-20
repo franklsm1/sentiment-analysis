@@ -86,9 +86,9 @@ const App: React.FC = () => {
                 labelPlacement="top"
               />
               <FormControlLabel
-                value="h"
+                value="m"
                 control={<Radio color="primary" />}
-                label="Hour(s)"
+                label="Month(s)"
                 labelPlacement="top"
               />
             </RadioGroup>

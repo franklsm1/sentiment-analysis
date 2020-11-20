@@ -12,7 +12,7 @@ export const getKeywords = async (setKeywords) => {
 };
 
 export const getPosts = async (timeframeNumber, timeframeUnits) => {
-  const startDate = new Date(new Date().valueOf() - 1000 * 60 * (timeframeUnits === 'h' ? 60 : 60 * 24) * timeframeNumber);
+  const startDate = new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 * (timeframeUnits === 'm' ? 30 : 1) * timeframeNumber);
   const response = await fetch(`${host}/api/v1/posts?startDate=${startDate.toISOString()}`);
   const body = await response.json();
 

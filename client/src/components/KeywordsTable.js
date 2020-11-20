@@ -11,10 +11,10 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(3)
   },
   selected: {
-    backgroundColor: 'yellow',
+    backgroundColor: 'yellow'
   }
 }));
 
@@ -30,7 +30,6 @@ export default function KeywordsTable ({ setSelectedId, keywords, filterPosts })
   const rows = keywords.map(({ id, value, status, created_date: createdDate }) => createData(id, value, status, createdDate));
   const isSelected = id => selected === id;
   const selectHandler = (row) => {
-    console.log('row ->>>', row);
     setSelected(row);
     setSelectedId(row);
     filterPosts(row);
@@ -38,37 +37,37 @@ export default function KeywordsTable ({ setSelectedId, keywords, filterPosts })
   return (
     <Paper className={classes.root}>
       <div>
-        <Typography  style={{paddingTop:'1rem'}} variant="h6">
+        <Typography style={{ paddingTop: '1rem' }} variant="h6">
           <strong>Select a keyword below</strong>
         </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Keyword</TableCell>
-            <TableCell>Start Date</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map(row => {
-            return (
-              <TableRow onClick={() => selectHandler(row.id)}
-                role={row.id}
-                hover
-                aria-checked={isSelected(row.id)}
-                aria-label={row.keyword}
-                className={isSelected(row.id) && classes.selected}
-                key={row.id}>
-                <TableCell component="th" scope="row">
-                  {row.keyword}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <span>{row.createdDate}</span>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Keyword</TableCell>
+              <TableCell>Start Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map(row => {
+              return (
+                <TableRow onClick={() => selectHandler(row.id)}
+                  role={row.id}
+                  hover
+                  aria-checked={isSelected(row.id)}
+                  aria-label={row.keyword}
+                  className={isSelected(row.id) && classes.selected}
+                  key={row.id}>
+                  <TableCell component="th" scope="row">
+                    {row.keyword}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    <span>{row.createdDate}</span>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
     </Paper>
   );
