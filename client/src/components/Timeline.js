@@ -3,7 +3,7 @@ import { TwitterTweetEmbed } from 'react-twitter-embed';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Timeline = (props) => {
-  const offsetNumber = 1;
+  const offsetNumber = 2;
   const numberOfItemsToLoad = props.tweets.length > offsetNumber ? offsetNumber : props.tweets.length;
   const [hasMore, setHasMore] = useState(props.tweets.length > offsetNumber);
   const [currentPostIndex, setCurrentPostIndex] = useState(numberOfItemsToLoad);
