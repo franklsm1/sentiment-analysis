@@ -1,5 +1,6 @@
 # React, Express, and MySQL App to track sentiment Analysis
 
+View the live site at [allstate.io](https://allstate.io/)
 ### Setup MySQL locally
 1) install brew (if not installed): `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 1) install MySQL (on a mac) with: `brew install mysql`
