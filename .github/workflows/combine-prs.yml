@@ -51,7 +51,7 @@ jobs:
                 statusOK = true;
                 if(${{ github.event.inputs.mustBeGreen }}) {
                   console.log('Checking green status: ' + branch);
-                  const statuses = await github.paginate('GET /repos/{owner}/{repo}/github-status-checks/commits/{ref}/check-suites', {
+                  const statuses = await github.paginate('GET /repos/{owner}/{repo}/commits/{ref}/check-suites', {
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     ref: branch
